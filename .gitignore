@@ -1,0 +1,35 @@
+# ---- Donnees & sorties (jamais versionnees : volumineuses, licences propres) ----
+*.nc
+*.tif
+*.tiff
+*.grib
+*.grib2
+*.csv.gz
+*.rds
+*.RData
+sorties_downscaling/
+data/
+donnees/
+
+# ---- Sorties de demo ----
+python/sortie_demo.nc
+
+# ---- Logs ----
+log_lanceur_downscaling_*.txt
+*.log
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+
+# ---- R ----
+.Rhistory
+.Rproj.user/
+
+# ---- OS ----
+.DS_Store
+Thumbs.db

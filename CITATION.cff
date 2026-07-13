@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "Si vous utilisez ce code, merci de le citer comme ci-dessous."
+title: "downscaling-digitalis : downscaling 1 km par methode Delta (SAFRAN, E-OBS, CHELSA)"
+abstract: >-
+  Descente d'echelle statistique 8-11 km vers 1 km (methode Delta) de bases
+  climatiques journalieres (SAFRAN, E-OBS, CHELSA), calee sur la climatologie
+  mensuelle 1 km DIGITALIS. Implementations R (production) et Python (reference).
+type: software
+authors:
+  - family-names: Genty
+    given-names: Jeremy
+    affiliation: "Stage M2"
+license: CC-BY-4.0
+date-released: "2026-07-13"
+keywords:
+  - downscaling
+  - climat
+  - methode Delta
+  - DIGITALIS
+  - SAFRAN
+  - E-OBS
+  - CHELSA
+  - France
+# Travail encadre par Christian Piedallu et Violette Gautier (INRAE).
+# La climatologie DIGITALIS, reference de la correction, est l'oeuvre de
+# Christian Piedallu et n'est pas produite par ce depot (cf. references).
+references:
+  - type: data
+    title: "DIGITALIS : climatologie mensuelle 1 km de la France"
+    authors:
+      - family-names: Piedallu
+        given-names: Christian
+    notes: "Reference de la correction (cible mensuelle) ; non redistribuee ici."

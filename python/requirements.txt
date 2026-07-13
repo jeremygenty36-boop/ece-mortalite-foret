@@ -1,0 +1,12 @@
+# --- Coeur + demo + tests (tout ce qui tourne SANS donnees reelles) ---
+numpy>=1.24
+xarray>=2023.1
+netCDF4>=1.6
+
+# --- Optionnel : chemin rapide IDW (sinon repli NumPy pur) ---
+# scipy>=1.10
+
+# --- Optionnel : I/O des VRAIES donnees (rasters, reprojection, masque France) ---
+# rioxarray>=0.15
+# rasterio>=1.3
+# geopandas>=0.13
