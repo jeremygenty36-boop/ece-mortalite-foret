@@ -1,9 +1,11 @@
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({
   library(terra)
 })
 
-ROOT_LOC <- "D:/Stage_JeremyG"
-ROOT_SRV <- "S:/Projets/stage_JeremyG"
+ROOT_LOC <- LOCAL_ROOT
+ROOT_SRV <- PROJET
 
 SRC_DIGI_EOBS <- file.path(ROOT_SRV, "3-Donnees", "5-DIGITALIS",
                             "5-DIGITALIS_daily_DS_EOBS_BCSD_bilinear")
