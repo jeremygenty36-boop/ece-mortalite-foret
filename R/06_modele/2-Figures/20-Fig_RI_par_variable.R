@@ -11,7 +11,7 @@ if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config
 suppressPackageStartupMessages({ library(data.table); library(ggplot2) })
 
 # .PFX : fourni par config/chemins.R
-if (!exists("RUN_TAG")) RUN_TAG <- "Mortalite_2009-2023_r075"
+if (!exists("RUN_TAG")) RUN_TAG <- "Mortalite_2015-2023_r070_n1000_binaire"
 .VARIANTE_DIR <- if (grepl("_dominants$", RUN_TAG)) "dominants" else if (grepl("_domines$", RUN_TAG)) "domines" else if (grepl("_pur080$", RUN_TAG)) "pur080" else "standard"  # niveau jeu de donnees (cf 6-Extraction_bases_variantes.R)
 DIRM    <- file.path(.PFX, "Projets/stage_JeremyG/5-Resultats/5-Modeles", .VARIANTE_DIR, RUN_TAG)
 DIRM_SY <- file.path(DIRM, "2-Syntheses")

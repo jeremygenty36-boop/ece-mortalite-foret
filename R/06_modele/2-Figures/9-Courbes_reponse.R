@@ -15,7 +15,7 @@
 if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({ library(data.table); library(ggplot2) })
 # .PFX : fourni par config/chemins.R
-if (!exists("RUN_TAG")) RUN_TAG <- "Mortalite_2009-2023_r075"
+if (!exists("RUN_TAG")) RUN_TAG <- "Mortalite_2015-2023_r070_n1000_binaire"
 .VARIANTE_DIR <- if (grepl("_dominants$", RUN_TAG)) "dominants" else if (grepl("_domines$", RUN_TAG)) "domines" else if (grepl("_pur080$", RUN_TAG)) "pur080" else "standard"  # niveau jeu de donnees (cf 6-Extraction_bases_variantes.R)
 if (!exists("F_IFN")) {  # surchargeable ; sinon DEDUIT de la variante (RUN_TAG) -- evite d'utiliser la base standard pour dominants/domines/pur080
   .IFN_FILE <- c(standard="IFN_placette.csv", dominants="IFN_placette_dominants.csv",
@@ -28,8 +28,10 @@ if (!exists("F_IFN")) {  # surchargeable ; sinon DEDUIT de la variante (RUN_TAG)
 if (!exists("FILTRE_GRECO"))
   FILTRE_GRECO <- if (grepl("Montagne", RUN_TAG)) c("D","E","G","H","I") else
                   if (grepl("Plaine",   RUN_TAG)) c("A","B","C","F","J") else NULL
-if (!exists("CAMPAGNE_MIN")) CAMPAGNE_MIN <- if (grepl("2009-2023", RUN_TAG)) 2009L else 2015L
-if (!exists("CAMPAGNE_MAX")) CAMPAGNE_MAX <- if (grepl("2009-2023", RUN_TAG)) 2023L else 2024L
+# v1.1 : periode lue dans RUN_TAG (AAAA-AAAA), sinon 2015-2023
+.yy_run <- as.integer(unlist(strsplit(regmatches(RUN_TAG, regexpr("[0-9]{4}-[0-9]{4}", RUN_TAG)), "-")))
+if (!exists("CAMPAGNE_MIN")) CAMPAGNE_MIN <- if (length(.yy_run) == 2L) .yy_run[1] else 2015L
+if (!exists("CAMPAGNE_MAX")) CAMPAGNE_MAX <- if (length(.yy_run) == 2L) .yy_run[2] else 2023L
 DIRM    <- file.path(.PFX, "Projets/stage_JeremyG/5-Resultats/5-Modeles", .VARIANTE_DIR, RUN_TAG)
 DIRM_SY <- file.path(DIRM, "2-Syntheses")
 DIRF <- file.path(.PFX, "Projets/stage_JeremyG/5-Resultats/5-Modeles", .VARIANTE_DIR, RUN_TAG, "Figures", "2-Importance_relative", "Courbes_reponse")

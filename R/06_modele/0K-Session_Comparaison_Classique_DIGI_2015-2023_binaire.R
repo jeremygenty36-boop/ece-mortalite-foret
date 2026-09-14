@@ -18,6 +18,10 @@ INDICES_AUTORISES <- c("BHC_MAM", "BHC_JJA", "Tmax_MAM", "Tmax_JJA", "Tmin_hiver
 VAR_FIXES         <- c("pH", "G_ha_tot", "Gini", "c13_moy_sp", "prop_G")
 BASES             <- list(list(code = "DIGI", label = "DIGITALIS-v3/v4"))
 COR_SEUIL         <- 0.70
+# v1.1 : placettes alignees sur l'echantillon des runs ECE (6 ECE x 5 bases complets)
+ECHANTILLON_COMMUN  <- TRUE
+BASES_ECHANTILLON   <- c("EOB10", "SAF8", "CHE1", "EOBDS", "SAFDS")
+INDICES_ECHANTILLON <- c("TXx", "TNn", "SPEI6", "WG10P", "HWN", "CWN")
 N_ITER            <- 1000L
 N_PARALLEL        <- 8L
 

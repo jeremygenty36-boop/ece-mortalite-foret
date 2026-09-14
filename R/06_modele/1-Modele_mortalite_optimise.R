@@ -66,6 +66,12 @@ if (!exists("TOL_FORME"))   TOL_FORME   <- 0.05  # proeminence min. de l'extremu
 if (!exists("SEUIL_FORME")) SEUIL_FORME <- 0.5   # frac. min. d'iterations pour retenir U/n (sinon repli sur le signe)
 PROP_G_MIN <- 0
 N_ANS      <- 10L
+# v1.1 : echantillon commun. TRUE = une essence est modelisee sur les MEMES placettes
+# pour toutes les bases retenues (lignes completes sur les variables fixes et sur les
+# indices INDICES_ECHANTILLON de toutes les bases). Poser INDICES_ECHANTILLON dans la
+# session pour aligner des runs aux candidats differents (ex. peuplement seul vs ECE).
+# FALSE = comportement v1.0 (na.omit base par base).
+if (!exists("ECHANTILLON_COMMUN")) ECHANTILLON_COMMUN <- TRUE
 if (!exists("N_PARALLEL"))
   N_PARALLEL <- min(8L, max(1L, parallel::detectCores() - 2L))
 
@@ -96,6 +102,13 @@ if (!exists("BASES") || is.null(BASES)) {
 .alias_bases <- c(EOBS="EOB10", SAFRAN="SAF8", CHELSA="CHE1",
                   DIGI_EOBS="EOBDS", DIGI_SAF="SAFDS", DIGI_CHEL="CHEDS")
 .norm_base <- function(x) { y <- .alias_bases[x]; unname(ifelse(is.na(y), x, y)) }
+# v1.1 : bases qui definissent l'echantillon commun = BASES hors BASES_EXCLUDE, fixees AVANT
+# BASES_ONLY -> un run lance base par base garde les memes placettes que le run complet.
+if (!exists("BASES_ECHANTILLON"))
+  BASES_ECHANTILLON <- setdiff(vapply(BASES, `[[`, "", "code"),
+                               if (exists("BASES_EXCLUDE")) .norm_base(BASES_EXCLUDE) else character(0))
+# v1.1 : rang de chaque essence dans la liste COMPLETE (avant ESPECES_ONLY), pour la graine
+.RANG_ESPECE <- setNames(seq_along(ESPECES), vapply(ESPECES, `[[`, "", "code"))
 if (exists("ESPECES_ONLY"))
   ESPECES <- Filter(function(e) e$code %in% ESPECES_ONLY, ESPECES)
 if (exists("BASES_ONLY"))
@@ -135,6 +148,8 @@ cat(sprintf("  Especes (%d) : %s\n",
 cat(sprintf("  Bases   (%d) : %s\n",
             length(BASES),   paste(vapply(BASES,   `[[`, "", "code"), collapse = ", ")))
 cat(sprintf("  VAR_FIXES = %s\n", paste(VAR_FIXES, collapse = ", ")))
+cat(sprintf("  ECHANTILLON_COMMUN = %s | INDICES_ECHANTILLON = %s\n", ECHANTILLON_COMMUN,
+            if (exists("INDICES_ECHANTILLON")) paste(INDICES_ECHANTILLON, collapse = ", ") else "(= INDICES_AUTORISES)"))
 cat(sprintf("  INDICES_AUTORISES = %s\n",
             if (length(INDICES_AUTORISES) == 0L) "(aucun)"
             else paste(INDICES_AUTORISES, collapse = ", ")))
@@ -312,8 +327,11 @@ run_espece <- function(esp_data) {
     ece_present <- bdata$ece_present
     cand_all    <- c(VAR_FIXES, ece_present)
 
-    # Seed deterministe par (espece, base) -> reproductible au re-run
-    set.seed(42L + esp_data$esp_idx * 100L + bdata$base_idx)
+    # v1.1 : graine par ESSENCE seulement (rang fixe dans la liste complete) -> avec
+    # l'echantillon commun, les 1 000 partitions 70/30 sont identiques pour toutes les
+    # bases (comparaison appariee) et ne dependent pas de ESPECES_ONLY / BASES_ONLY.
+    # v1.0 : set.seed(42L + esp_idx * 100L + base_idx), rangs calcules apres filtrage.
+    set.seed(42L + esp_data$esp_rang * 100L)
 
     .t_b <- Sys.time(); .hb <- max(1L, N_ITER %/% 5L)   # battement de progression : 5x par base
     .prog <- function(txt) { cat(txt, "\n"); try(writeLines(txt, file.path(DIR_PROG, paste0(esp$code, ".txt"))), silent = TRUE) }
@@ -470,6 +488,22 @@ for (e_idx in seq_along(ESPECES)) {
     cat(sprintf("  SKIP %s : aucune placette\n", esp$code)); next
   }
 
+  # v1.1 : echantillon commun a toutes les bases retenues pour cette essence
+  if (isTRUE(ECHANTILLON_COMMUN)) {
+    .ind_ech  <- if (exists("INDICES_ECHANTILLON")) INDICES_ECHANTILLON else INDICES_AUTORISES
+    cols_ech  <- c("idp", "n_tiges", "n_mort_sp", "prop_mort_sp", VAR_FIXES,
+                   as.vector(outer(.ind_ech, .norm_base(BASES_ECHANTILLON), paste, sep = "_")))
+    .manq     <- setdiff(cols_ech, names(d_esp))
+    if (length(.manq) > 0L)
+      stop("ECHANTILLON_COMMUN : colonnes absentes de F_IFN pour ", esp$code, " : ",
+           paste(head(.manq, 6), collapse = ", "))
+    .n_av <- nrow(d_esp)
+    d_esp <- d_esp[stats::complete.cases(d_esp[, ..cols_ech])]
+    cat(sprintf("  %s : echantillon commun a %d base(s) (%s) : %d -> %d lignes\n",
+                esp$code, length(BASES_ECHANTILLON), paste(BASES_ECHANTILLON, collapse = ","),
+                .n_av, nrow(d_esp)))
+  }
+
   bases_data <- list()
   for (b_idx in seq_along(BASES)) {
     base        <- BASES[[b_idx]]
@@ -505,7 +539,8 @@ for (e_idx in seq_along(ESPECES)) {
     cat(sprintf("  SKIP %s : aucune base valide\n", esp$code)); next
   }
 
-  especes_data[[esp$code]] <- list(esp = esp, bases = bases_data, esp_idx = e_idx)
+  especes_data[[esp$code]] <- list(esp = esp, bases = bases_data, esp_idx = e_idx,
+                                   esp_rang = unname(.RANG_ESPECE[esp$code]))
   cat(sprintf("  %s : %d bases valides | %d placettes | %d morts (%.1f%%)\n",
               esp$code, length(bases_data), nrow(d_esp),
               sum(d_esp$n_mort_sp > 0, na.rm = TRUE),

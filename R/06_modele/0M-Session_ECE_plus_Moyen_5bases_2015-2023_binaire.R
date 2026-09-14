@@ -29,6 +29,9 @@ BASES             <- list(
   list(code = "SAFDS", label = "SAF-DS")
 )
 COR_SEUIL         <- 0.70
+# v1.1 : meme echantillon que les runs peuplement et ECE (lignes completes pour les 6 ECE des 5 bases)
+ECHANTILLON_COMMUN  <- TRUE
+INDICES_ECHANTILLON <- ECE_IND
 N_ITER            <- 1000L
 N_PARALLEL        <- 8L
 

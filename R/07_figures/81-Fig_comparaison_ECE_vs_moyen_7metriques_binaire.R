@@ -16,7 +16,7 @@ suppressPackageStartupMessages({ library(data.table); library(ggplot2); library(
 
 # .PFX : fourni par config/chemins.R
 .BASE <- file.path(.PFX, "Projets/stage_JeremyG/5-Resultats/5-Modeles")
-if (!exists("RUN_ECE")) RUN_ECE <- "Mortalite_2015-2024_r070_n1000_binaire"
+if (!exists("RUN_ECE")) RUN_ECE <- "Mortalite_2015-2023_r070_n1000_binaire"
 if (!exists("RUN_MOY")) RUN_MOY <- "ECE_Moyen_5bases_2015-2023_binaire"
 .cl_dir <- function(tag) { p <- file.path(.BASE, "standard", tag); if (dir.exists(p)) p else file.path(.BASE, tag) }
 .DIRF_OUT <- file.path(.BASE, "standard", RUN_ECE, "Figures", "Perf_ECE_vs_moyen")

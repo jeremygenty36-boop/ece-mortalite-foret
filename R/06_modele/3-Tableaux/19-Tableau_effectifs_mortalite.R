@@ -15,7 +15,7 @@ suppressPackageStartupMessages({ library(data.table) })
 # .PFX : fourni par config/chemins.R
 if (!exists("F_IFN"))   # surchargeable : ne PAS ecraser la base d'une variante
   F_IFN <- file.path(.PFX, "Projets/stage_JeremyG/3-Donnees/6-IFN/IFN_placette.csv")
-if (!exists("RUN_TAG")) RUN_TAG <- "Mortalite_2015-2024_r070_n1000"
+if (!exists("RUN_TAG")) RUN_TAG <- "Mortalite_2015-2023_r070_n1000_binaire"
 .VARIANTE_DIR <- if (grepl("_dominants$", RUN_TAG)) "dominants" else if (grepl("_domines$", RUN_TAG)) "domines" else if (grepl("_pur080$", RUN_TAG)) "pur080" else "standard"
 DIRM_SY <- file.path(.PFX, "Projets/stage_JeremyG/5-Resultats/5-Modeles", .VARIANTE_DIR, RUN_TAG, "2-Syntheses")
 dir.create(DIRM_SY, showWarnings = FALSE, recursive = TRUE)

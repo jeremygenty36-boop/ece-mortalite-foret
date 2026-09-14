@@ -5,8 +5,11 @@
 #   Clone de 0E-Session_France_complet.R, en MODE_REPONSE="binaire".
 #   NE LANCER QU'APRES validation du test 0N (n=100) : ce run est long.
 #   Deux modeles sequentiels + figures/tableaux, RUN_TAG suffixe _binaire :
-#     - Mortalite_2015-2024_Peuplement_n1000_binaire
-#     - Mortalite_2015-2024_r070_n1000_binaire
+#     - Mortalite_2015-2023_Peuplement_n1000_binaire
+#     - Mortalite_2015-2023_r070_n1000_binaire
+#   v1.1 : periode nommee 2015-2023 (les donnees s'arretent en 2023), CHE-C exclue
+#   explicitement, et les deux modeles portent sur le MEME echantillon de placettes
+#   (lignes completes pour les 6 ECE des 5 bases), y compris le modele peuplement.
 #   Le run binomial existant n'est PAS ecrase (RUN_TAG different).
 # =============================================================================
 
@@ -35,12 +38,16 @@ MODE_REPONSE <- "binaire"
 
 # --- parametres (identiques a 0E-France) -------------------------------------
 CAMPAGNE_MIN <- 2015L
-CAMPAGNE_MAX <- 2024L
+CAMPAGNE_MAX <- 2023L
 VAR_FIXES    <- c("pH", "G_ha_tot", "Gini", "c13_moy_sp", "prop_G")
 COR_SEUIL    <- 0.70
 N_ITER       <- 1000L
 N_PARALLEL   <- 8L
 FILTRE_GRECO <- NULL
+# v1.1 : 5 bases de l'etude (CHE-C exclue) et echantillon commun aux deux modeles
+BASES_EXCLUDE       <- "CHEDS"
+ECHANTILLON_COMMUN  <- TRUE
+INDICES_ECHANTILLON <- c("TXx", "TNn", "SPEI6", "WG10P", "HWN", "CWN")
 
 .SCRIPTS_COMPLET <- c("1-Modele_mortalite_optimise.R",
                       "3-Tableaux/7-Tableau_synthese_modele.R",
@@ -62,8 +69,8 @@ FILTRE_GRECO <- NULL
 }
 
 t0 <- proc.time()
-.lancer(paste0("Mortalite_2015-2024_Peuplement_n1000_binaire", .SUF), character(0), .SCRIPTS_COMPLET)
-.lancer(paste0("Mortalite_2015-2024_r070_n1000_binaire", .SUF),
+.lancer(paste0("Mortalite_2015-2023_Peuplement_n1000_binaire", .SUF), character(0), .SCRIPTS_COMPLET)
+.lancer(paste0("Mortalite_2015-2023_r070_n1000_binaire", .SUF),
         c("TXx", "TNn", "SPEI6", "WG10P", "HWN", "CWN"), .SCRIPTS_COMPLET)
 cat(strrep("=", 70), "\n",
     sprintf("  FRANCE BINAIRE : 2 modeles termines en %.0f min\n", (proc.time() - t0)[["elapsed"]] / 60),
