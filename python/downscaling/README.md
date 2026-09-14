@@ -1,4 +1,4 @@
-# Version Python — downscaling 1 km par méthode Delta
+# Version Python : downscaling 1 km par méthode Delta
 
 Implémentation de **référence** (lisible, testée, exécutable) de la méthode Delta
 utilisée par les scripts R de production du dossier `3-Downscaling`. Objectif :
@@ -30,7 +30,7 @@ python/
 ├── downscaling_delta/
 │   ├── methode_delta.py   # coeur NumPy : stat mensuelle, facteur, application, downscale_mois
 │   ├── interpolation.py   # IDW (NumPy, scipy optionnel) + bilinéaire (NumPy pur)
-│   ├── io_raster.py        # I/O des VRAIES données (rioxarray/rasterio/geopandas — optionnels)
+│   ├── io_raster.py        # I/O des VRAIES données (rioxarray/rasterio/geopandas, optionnels)
 │   └── pipeline.py         # orchestration : points→IDW ou grille→bilinéaire, puis méthode Delta
 ├── config_chemins.py       # equivalent de r/config_chemins.R (racine DIGI_ROOT)
 ├── demo_synthetique.py     # démo bout-en-bout sur données jouet (aucune donnée réelle)

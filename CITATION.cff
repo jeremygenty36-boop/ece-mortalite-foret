@@ -1,18 +1,24 @@
 cff-version: 1.2.0
 message: "Si vous utilisez ce code, merci de le citer comme ci-dessous."
-title: "downscaling-digitalis : downscaling 1 km par methode Delta (SAFRAN, E-OBS, CHELSA)"
+title: "ece-mortalite-foret : evenements climatiques extremes a 1 km et mortalite des arbres en France"
 abstract: >-
-  Descente d'echelle statistique 8-11 km vers 1 km (methode Delta) de bases
-  climatiques journalieres (SAFRAN, E-OBS, CHELSA), calee sur la climatologie
-  mensuelle 1 km DIGITALIS. Implementations R (production) et Python (reference).
+  Chaine de traitement du stage M2 : descente d'echelle a 1 km (methode Delta,
+  calee sur DIGITALIS) de SAFRAN, E-OBS et CHELSA ; calcul de six indices
+  d'evenements climatiques extremes ; extraction aux placettes de l'inventaire
+  forestier national ; modeles de mortalite par essence et par base climatique.
+  Version 1.0 : code tel qu'execute pour le rapport de stage (juillet 2026).
 type: software
 authors:
   - family-names: Genty
     given-names: Jeremy
     affiliation: "Stage M2"
 license: CC-BY-4.0
-date-released: "2026-07-13"
+version: "1.0"
+date-released: "2026-09-14"
 keywords:
+  - evenements climatiques extremes
+  - mortalite des arbres
+  - inventaire forestier
   - downscaling
   - climat
   - methode Delta

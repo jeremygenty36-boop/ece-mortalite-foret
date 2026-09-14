@@ -1,0 +1,31 @@
+# Paquets R appeles par les scripts du depot (library, require, requireNamespace, pkg::)
+# CRAN
+curl
+data.table
+dplyr
+forcats
+geodata
+ggplot2
+ggtext
+lubridate
+matrixStats
+MLmetrics
+ncdf4
+openxlsx
+patchwork
+reshape2
+rnaturalearth
+rnaturalearthdata
+sf
+terra
+tidyr
+udunits2
+writexl
+# Installes par R/04_indices_ece/1-ECE_*.R si absents
+SPEI
+ncdf4.helpers
+PCICt
+snow
+proj4
+# Depuis la copie de Climpact (third_party/climpact) : climdex.pcic, climdex.pcic.ncdf
+# Base R : grid, grDevices, parallel, utils

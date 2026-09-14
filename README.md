@@ -1,86 +1,79 @@
-# downscaling-digitalis
+# ece-mortalite-foret
 
-Descente d'échelle **8–11 km → 1 km** de trois bases climatiques journalières
-(**SAFRAN**, **E-OBS**, **CHELSA**) par la **méthode Delta**, calée sur la
-climatologie mensuelle 1 km **DIGITALIS**. Produit, pour chaque base, des champs
-journaliers de précipitation, tmin et tmax à 1 km cohérents avec la moyenne
-mensuelle DIGITALIS.
+Chaîne de traitement complète du stage de Master 2 de Jérémy Genty (UMR Silva,
+2025-2026) : **les événements climatiques extrêmes (ECE), calculés à 1 km,
+expliquent-ils la mortalité des arbres mieux que le climat moyen ?**
 
-Deux implémentations :
-- **`r/`** — les scripts de production R **tels qu'exécutés** (parallélisés) pour l'étude.
-- **`python/`** — une **implémentation de référence** lisible, testée et exécutable
-  sur un petit échantillon (sans donnée réelle).
+La chaîne descend trois bases climatiques journalières à 1 km (méthode Delta),
+en dérive six indices d'extrêmes, les extrait aux placettes de l'Inventaire
+forestier national, puis modélise la mortalité par essence et par base.
 
----
+> **Version v1.0 : code tel qu'exécuté pour le rapport de stage (juillet 2026).**
+> Seules les racines des chemins ont été rendues configurables ; aucune ligne de
+> calcul n'a été modifiée (vérifiable dans l'historique git). Les défauts connus
+> sont listés dans [`ERRATA.md`](ERRATA.md) et seront corrigés dans une v1.1
+> distincte, sans effet rétroactif sur les résultats du rapport.
 
-## Méthode en bref
+## La chaîne en 7 modules
 
-Pour chaque (mois, variable), un facteur de correction mensuel calé sur DIGITALIS
-est appliqué à chaque jour interpolé à 1 km :
+| Module | Rôle | Machine |
+|---|---|---|
+| [`R/01_sources`](R/01_sources) | téléchargement et contrôle des sources (CHELSA, E-OBS, SAFRAN, limites France) | calcul |
+| [`R/02_downscaling`](R/02_downscaling) | descente d'échelle à 1 km par méthode Delta (SAFRAN IDW, E-OBS et CHELSA bilinéaire) | calcul |
+| [`R/03_netcdf_annuels`](R/03_netcdf_annuels) | mise en forme en NetCDF annuels WGS84 | calcul |
+| [`R/04_indices_ece`](R/04_indices_ece) | 6 indices (TXx, TNn, SPEI6, WG10P, HWN, CWN) × 6 bases, puis post-traitement | calcul |
+| [`R/05_extraction_ifn`](R/05_extraction_ifn) | jeu d'analyse aux placettes IFN (fenêtre de 10 ans) | calcul |
+| [`R/06_modele`](R/06_modele) | GLM cloglog par essence × base, 1 000 partitions 70/30 | calcul |
+| [`R/07_figures`](R/07_figures), [`python/figures`](python/figures) | figures du rapport | calcul ou poste |
 
-| Variable | Interpolation source → 1 km | Facteur mensuel | Application jour |
-|----------|------------------------------|-----------------|------------------|
-| Précipitation | IDW (SAFRAN) ou bilinéaire (E-OBS/CHELSA) | `ratio = clamp(DIGI / max(src_m, 0,001), 0,001, 5)` | `jour × ratio` (≥ 0) |
-| Température (tmin/tmax) | idem | `delta = DIGI − src_m` | `jour + delta` |
+Détail des entrées, sorties et de l'ordre d'exécution : [`docs/pipeline.md`](docs/pipeline.md).
 
-La **somme** mensuelle (précip) ou la **moyenne** mensuelle (temp) du résultat
-égale DIGITALIS. Détails complets : [`docs/methode.md`](docs/methode.md).
+## Documentation
 
-## Structure
+- [`docs/pipeline.md`](docs/pipeline.md) : ordre d'exécution, entrées, sorties, arborescence attendue
+- [`docs/methode_downscaling.md`](docs/methode_downscaling.md) : méthode Delta
+- [`docs/indices_ece.md`](docs/indices_ece.md) : définition des 6 indices, telle que codée
+- [`docs/modele_mortalite.md`](docs/modele_mortalite.md) : jeu d'analyse et modèle
+- [`docs/figures_rapport.md`](docs/figures_rapport.md) : chaque figure du rapport et son script
+- [`docs/sources_donnees.md`](docs/sources_donnees.md) : origine et accès aux données
+- [`ERRATA.md`](ERRATA.md) : écarts connus entre intention et code
 
+## Lancer un script
+
+Les scripts R ont été exécutés sous Windows (serveur de calcul, 36 cœurs, 384 Go),
+données sur un stockage réseau. Depuis la **racine du dépôt**, dans une console R :
+
+```r
+setwd("C:/chemin/vers/ece-mortalite-foret")
+Sys.setenv(ECE_NAS_ROOT = "S:", ECE_LOCAL_ROOT = "D:/Stage_JeremyG")   # adapter
+source("R/04_indices_ece/1-ECE_EOBS.R")
 ```
-downscaling-digitalis/
-├── r/          scripts R de production (SAFRAN IDW, E-OBS / CHELSA bilinéaire) + config + lanceur
-├── python/     implémentation de référence (package downscaling_delta) + démo + tests
-├── docs/       méthode détaillée + origine des données
-├── LICENSE     CC-BY 4.0
-└── CITATION.cff
-```
 
-## Démarrage rapide (Python, sans données réelles)
+Chaque script charge [`config/chemins.R`](config/chemins.R), qui définit les racines
+(`PROJET`, `LOCAL_ROOT`, `CLIMPACT_RACINE`, `MASQUE_FRANCE_GPKG`, `PYTHON_EXE`).
+Le module 02 garde sa propre configuration ([`R/02_downscaling/config_chemins.R`](R/02_downscaling/config_chemins.R),
+variable `DIGI_ROOT`).
 
-```bash
-cd python
-python3 -m pip install -r requirements.txt      # numpy, xarray, netCDF4
-python3 demo_synthetique.py                      # pipeline complet sur données jouet
-python3 tests/test_methode_delta.py              # tests unitaires
-```
+Les modules 01 à 04 manipulent des dizaines de Go et tournent plusieurs jours.
+Machine partagée : plafonner les workers (`N_PARALLEL_ECE`, `N_PARALLEL`) avant `source()`.
 
-La démo génère des données synthétiques, applique les deux variantes de la méthode
-(IDW + bilinéaire) et vérifie les propriétés de conservation. Aucune donnée réelle
-requise ; `scipy`/`rasterio` sont optionnels.
+## Ce que le dépôt ne contient pas
 
-## Reproduire sur les vraies données
+- **Aucune donnée** : climat brut ou downscalé, indices, `IFN_placette.csv`, résultats de modèles.
+  DIGITALIS (C. Piedallu, INRAE) n'est pas redistribuable ; les autres jeux relèvent de leurs licences.
+- **Climpact** : à télécharger (v3.3.2), puis appliquer les modifications du projet
+  ([`third_party/climpact`](third_party/climpact)).
+- Le masque GADM `France_GADM_L0.gpkg` (licence GADM) : produit par `R/01_sources/0-Telecharger_limites_France.R`.
+- Les scripts exploratoires, diagnostics ponctuels et correctifs historiques, restés dans l'arborescence du projet.
 
-1. **Obtenir les données** (SAFRAN, E-OBS, CHELSA, DIGITALIS) — voir
-   [`docs/sources_donnees.md`](docs/sources_donnees.md).
-2. **Adapter les chemins** : définir la variable d'environnement `DIGI_ROOT`
-   (racine des données) ou éditer `r/config_chemins.R` (et `python/config_chemins.py`).
-3. **Lancer** (R, sur une machine adaptée — production lourde) :
-   ```r
-   setwd("r")
-   source("lanceur_downscaling.R")     # enchaîne les 3 bases
-   # ou une base : source("production_CHELSA_bilineaire.R")
-   ```
+## Attribution
 
-> Les scripts R détectent automatiquement le nombre de workers selon la charge
-> CPU/RAM et reprennent sans recalculer les sorties déjà valides.
-
-## Données et attribution
-
-- **DIGITALIS** — climatologie mensuelle 1 km de la France, **œuvre de Christian
-  Piedallu** (INRAE) ; utilisée ici comme **référence** de la correction. Elle
-  n'est **pas** produite par ce dépôt et n'est pas librement redistribuable :
-  contacter les auteurs.
-- **SAFRAN / SIM2** — Météo-France · **E-OBS** — ECA&D / Copernicus ·
-  **CHELSA v2.1** — Karger et al. Conditions d'accès et citations dans
-  [`docs/sources_donnees.md`](docs/sources_donnees.md).
-
-Développé par **Jeremy Genty** (stage M2), dans le cadre d'un projet encadré par
-**Christian Piedallu** et **Violette Gautier** (INRAE). Voir [`CITATION.cff`](CITATION.cff).
+Développé par **Jérémy Genty** (stage M2), encadré par **Christian Piedallu** et
+**Violette Gautier**. La climatologie DIGITALIS, référence de la correction, est
+l'œuvre de Christian Piedallu. Voir [`CITATION.cff`](CITATION.cff).
 
 ## Licence
 
-Code et documentation sous **[CC-BY 4.0](LICENSE)** : réutilisation libre avec
-attribution. Les **données** (DIGITALIS, SAFRAN, E-OBS, CHELSA) relèvent de leurs
-licences propres et ne sont pas couvertes par la présente.
+Voir [`LICENSE`](LICENSE). Le choix de licence et la diffusion publique restent à
+valider avec les encadrants avant toute mise en ligne. Les fichiers de
+`third_party/climpact` sont sous GPL-3 (licence de Climpact).

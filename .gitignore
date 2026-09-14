@@ -33,3 +33,14 @@ venv/
 # ---- OS ----
 .DS_Store
 Thumbs.db
+
+# ---- Pipeline complet ----
+*.gpkg
+*.csv
+*.xlsx
+*.docx
+*.pdf
+*.png
+third_party/climpact/climpact-master/
+Rplots.pdf
+_corbeille/

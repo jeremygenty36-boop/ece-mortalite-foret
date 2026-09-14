@@ -1,0 +1,4 @@
+# Helpers ECE et figures (python/ece_helpers, python/figures)
+numpy>=1.24
+netCDF4>=1.6
+matplotlib>=3.10
