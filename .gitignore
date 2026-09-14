@@ -44,3 +44,5 @@ Thumbs.db
 third_party/climpact/climpact-master/
 Rplots.pdf
 _corbeille/
+sorties_figures/
+__pycache__/
