@@ -1,10 +1,12 @@
-# source("S:/Projets/stage_JeremyG/4-Travail/2-ECE/0-Lanceurs/0-Merge_periodes_climpact.R")
+# source("R/04_indices_ece/7-Merge_periodes_climpact.R")   # depuis la racine du depot
 # ==============================================================================
 # FUSION DES 5 PERIODES CLIMPACT -> dossier climpact_raw/ unique
 # A lancer UNE FOIS apres que les 5 periodes d'une base sont terminees.
 # Usage : modifier BASE_CODE et OUT_DIR, puis sourcer.
 # ==============================================================================
 
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 library(terra)
 library(ncdf4)
 library(lubridate)
@@ -19,12 +21,12 @@ if (!exists("BASE_CODE")) BASE_CODE <- "EOBS"   # EOBS | SAFRAN | CHELSA | DIGI_
 cat(sprintf("[merge] BASE_CODE = %s\n", BASE_CODE))
 
 OUT_DIRS <- list(
-  EOBS      = "S:/Projets/stage_JeremyG/5-Resultats/3-ECE/1-ECE_1979-2024/1-EOBS_11km",
-  SAFRAN    = "S:/Projets/stage_JeremyG/5-Resultats/3-ECE/1-ECE_1979-2024/2-SAFRAN_8km",
-  CHELSA    = "S:/Projets/stage_JeremyG/5-Resultats/3-ECE/1-ECE_1979-2024/3-CHELSA_1km",
-  DIGI_EOBS = "S:/Projets/stage_JeremyG/5-Resultats/3-ECE/1-ECE_1979-2024/4-DIGI_EOBS_1km",
-  DIGI_CHEL = "S:/Projets/stage_JeremyG/5-Resultats/3-ECE/1-ECE_1979-2024/6-DIGI_CHEL_1km",
-  DIGI_SAF  = "S:/Projets/stage_JeremyG/5-Resultats/3-ECE/1-ECE_1979-2024/5-DIGI_SAF_1km"
+  EOBS      = file.path(PROJET, "5-Resultats/3-ECE/1-ECE_1979-2024/1-EOBS_11km"),
+  SAFRAN    = file.path(PROJET, "5-Resultats/3-ECE/1-ECE_1979-2024/2-SAFRAN_8km"),
+  CHELSA    = file.path(PROJET, "5-Resultats/3-ECE/1-ECE_1979-2024/3-CHELSA_1km"),
+  DIGI_EOBS = file.path(PROJET, "5-Resultats/3-ECE/1-ECE_1979-2024/4-DIGI_EOBS_1km"),
+  DIGI_CHEL = file.path(PROJET, "5-Resultats/3-ECE/1-ECE_1979-2024/6-DIGI_CHEL_1km"),
+  DIGI_SAF  = file.path(PROJET, "5-Resultats/3-ECE/1-ECE_1979-2024/5-DIGI_SAF_1km")
 )
 
 # Periodes : debut = debut reel du fichier (avec warmup), debut_effectif = 1er mois a garder
@@ -69,8 +71,8 @@ lire_dates_nc <- function(f) {
 # meme avec compression=1 sur 552 couches x 2.2M pixels (CHELSA 1km).
 # Python n'a pas ce souci et fait le merge en quelques minutes.
 fusionner_nc <- function(fichiers, dates_liste, f_out, varname,
-                         py_exe = "C:/OSGeo4W64/bin/python.exe",
-                         py_script = "S:/Projets/stage_JeremyG/4-Travail/2-ECE/1-Calcul_indices/_merge_climpact_concat.py") {
+                         py_exe = PYTHON_EXE,
+                         py_script = file.path(DEPOT, "python", "ece_helpers", "_merge_climpact_concat.py")) {
   if (length(fichiers) == 0) return(NULL)
   if (!file.exists(py_exe))    stop("Python introuvable : ", py_exe)
   if (!file.exists(py_script)) stop("Script Python introuvable : ", py_script)
