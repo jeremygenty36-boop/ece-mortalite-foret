@@ -76,11 +76,19 @@ Développé par **Jérémy Genty** (stage M2), encadré par **Christian Piedallu
 l'œuvre de Christian Piedallu. Voir [`CITATION.cff`](CITATION.cff).
 
 Les scripts de la chaîne ont été rédigés et mis au point avec l'assistance de Claude (Anthropic)
-tout au long du stage : écriture du code, débogage, contrôle des sorties et suivi du bon déroulement
-des calculs. Cette assistance a permis de construire des scripts de cette ampleur, adaptés
-précisément aux choix méthodologiques de l'auteur, qui a défini chaque étape et en a validé les
-résultats. La relecture du code, les corrections de la v1.1 et la documentation du dépôt ont
-également été réalisées avec cette assistance.
+tout au long du stage. Cette assistance a joué un rôle central de **vérification, de validation et de
+garde-fou du paramétrage** :
+
+- contrôle systématique des paramètres avant chaque calcul (périodes, saisons, seuils, fenêtres,
+  opérateurs d'agrégation, bases retenues, exclusion de CHE-C et de la Corse) par rapport aux choix
+  méthodologiques fixés, afin d'empêcher toute dérive d'un script à l'autre ;
+- vérification du contenu des sorties plutôt que de leur seule existence (couches présentes, valeurs
+  manquantes, bornes physiques, cohérence entre bases) et arrêt des traitements en cas d'anomalie ;
+- relecture complète du code a posteriori, qui a produit l'[`ERRATA.md`](ERRATA.md), les corrections
+  de la v1.1 et la documentation du dépôt.
+
+Cette assistance a permis de construire des scripts de cette ampleur, adaptés précisément aux choix
+de l'auteur, qui a défini chaque étape, arbitré chaque écart relevé et validé les résultats.
 
 ## Licence
 
