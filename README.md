@@ -75,8 +75,12 @@ Développé par **Jérémy Genty** (stage M2), encadré par **Christian Piedallu
 **Violette Gautier**. La climatologie DIGITALIS, référence de la correction, est
 l'œuvre de Christian Piedallu. Voir [`CITATION.cff`](CITATION.cff).
 
-La relecture du code, les corrections de la v1.1 et la documentation ont été réalisées avec
-l'assistance de Claude (Anthropic), puis vérifiées et validées par l'auteur.
+Les scripts de la chaîne ont été rédigés et mis au point avec l'assistance de Claude (Anthropic)
+tout au long du stage : écriture du code, débogage, contrôle des sorties et suivi du bon déroulement
+des calculs. Cette assistance a permis de construire des scripts de cette ampleur, adaptés
+précisément aux choix méthodologiques de l'auteur, qui a défini chaque étape et en a validé les
+résultats. La relecture du code, les corrections de la v1.1 et la documentation du dépôt ont
+également été réalisées avec cette assistance.
 
 ## Licence
 
