@@ -1,7 +1,8 @@
 # Jeu d'analyse et modèle de mortalité
 
 Références de ligne : `R/05_extraction_ifn/1-Preparation_IFN.R` et
-`R/06_modele/1-Modele_mortalite_optimise.R`. Écarts connus : [`ERRATA.md`](../ERRATA.md).
+`R/06_modele/1-Modele_mortalite_optimise.R` de la v1.0 (tag `v1.0-rapport`). Écarts et
+corrections : [`ERRATA.md`](../ERRATA.md).
 
 ## Jeu d'analyse `IFN_placette.csv`
 
@@ -42,10 +43,15 @@ Un modèle par **essence × base** (8 × 5 dans le rapport). Réponse selon `MOD
 Étapes, pour chaque essence × base :
 
 1. **Filtres** : Corse exclue par département 2A/2B (l. 156), campagnes `CAMPAGNE_MIN`-`CAMPAGNE_MAX`,
-   `presence == 1`, lignes complètes sur les variables de la base (`na.omit`, l. 483, ERRATA 8),
-   au moins 50 placettes et 10 événements.
+   `presence == 1`, au moins 50 placettes et 10 événements.
+   **Échantillon commun (v1.1)** : `ECHANTILLON_COMMUN = TRUE` ne garde, pour une essence, que les
+   placettes complètes sur les variables fixes et sur `INDICES_ECHANTILLON` × `BASES_ECHANTILLON`
+   (par défaut les indices candidats et les bases hors `BASES_EXCLUDE`, fixées avant `BASES_ONLY`).
+   Toutes les bases sont donc modélisées sur les mêmes placettes (v1.0 : `na.omit` base par base, ERRATA 8).
 2. **1 000 itérations** (`N_ITER`). À chaque itération, tirage **sans remise** de 70 % des
-   placettes pour la calibration, 30 % pour la validation (l. 58, 332). Graine : l. 316 (ERRATA 9).
+   placettes pour la calibration, 30 % pour la validation (l. 58, 332). **Graine (v1.1)** :
+   `42 + 100 × rang de l'essence`, identique pour toutes les bases : mêmes partitions pour les
+   5 bases (v1.0 : graine différente par base, ERRATA 9).
 3. **Modèle de départ** : GLM binomial, **lien cloglog**, avec les 5 variables fixes et leur terme
    quadratique (`v + I(v²)`, l. 117). Les variables fixes restent toujours dans le modèle.
 4. **Sélection ascendante des ECE** : à chaque pas, le candidat (avec son terme quadratique) de BIC
@@ -71,10 +77,13 @@ Un modèle par **essence × base** (8 × 5 dans le rapport). Réponse selon `MOD
 | `2-Syntheses/RI_par_variable.csv` | IR normalisée, IR brute, sens, forme par variable |
 | `3-Predictions/` | prédictions de la dernière itération |
 
-## Runs cités dans le rapport
+## Runs
 
-| Run | Contenu |
-|---|---|
-| `Mortalite_2015-2024_Peuplement_n1000_binaire` | peuplement et sol seuls (AUC moyenne 0,753) |
-| `Mortalite_2015-2024_r070_n1000_binaire` | peuplement + 6 ECE, 5 bases (AUC moyenne 0,761) |
-| `ECE_Moyen_5bases_2015-2023_binaire` | 6 ECE + 6 moyennes saisonnières par base (Fig. A.2) |
+| Run v1.1 (session) | Nom du run dans le rapport (v1.0) | Contenu |
+|---|---|---|
+| `Mortalite_2015-2023_Peuplement_n1000_binaire` (0N2) | `Mortalite_2015-2024_Peuplement_n1000_binaire` | peuplement et sol seuls (rapport : AUC moyenne 0,753) |
+| `Mortalite_2015-2023_r070_n1000_binaire` (0N2) | `Mortalite_2015-2024_r070_n1000_binaire` | peuplement + 6 ECE, 5 bases (rapport : AUC moyenne 0,761) |
+| `ECE_Moyen_5bases_2015-2023_binaire` (0M) | idem | 6 ECE + 6 moyennes saisonnières par base (Fig. A.2) |
+| `Comparaison_Classique_DIGI_2015-2023_binaire` (0K) | idem | climat moyen DIGITALIS (usage dans le rapport à confirmer) |
+
+Les valeurs du rapport ne sont pas celles d'une relance v1.1 (SPEI6, échantillon et graine changent).

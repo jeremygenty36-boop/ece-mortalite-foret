@@ -4,8 +4,10 @@ Numérotation du **PDF rendu** (« Rapport de stage M2 BICG-Genty Jeremy.pdf »,
 Le dossier de travail `Figures_rapport/` utilisait une numérotation antérieure, indiquée
 entre parenthèses.
 
-Statut : **retrouvé** (script identifié et importé) · **à confirmer** (script probable) ·
-**à recréer** (aucun script trouvé, PDF seul) · **saisi** (tableau rempli à la main).
+Statut : **retrouvé** (script d'origine importé) · **recréé** (script réécrit en v1.1 et validé sur
+les données v1.0 : valeurs affichées identiques au PDF) · **à confirmer** · **à recréer** (aucun
+script, PDF seul). En v1.1, les figures se régénèrent sur les nouveaux runs : leurs valeurs
+différeront de celles du rapport (SPEI6, échantillon commun, graine).
 
 ## Corps du rapport
 
@@ -16,12 +18,12 @@ Statut : **retrouvé** (script identifié et importé) · **à confirmer** (scri
 | Fig. 3 | Schéma du downscaling (interpolation puis méthode Delta) | inclus au rapport | aucun | aucune | à préciser (dessin ?) |
 | Fig. 4 | Cumul de précipitations 2014, 4 bases à résolution native | `Figure_04_precipitations_2014.pdf` (22/07) | aucun ; variante d'un script de cartes 2014 à 6 bases (mars, non importé) | SAFRAN, E-OBS, CHELSA, DIGITALIS 2014 | à recréer |
 | Fig. 5 | Descente d'échelle de Tmin 2014, Alpes du Nord (SAF-8, SAF-DS, EOB-10, EOB-DS) | `Figure_06_descente_echelle_Alpes_TNn.pdf` (PNG converti) | aucun | NetCDF journaliers 2014 | à recréer |
-| Fig. 6 | Effet du downscaling sur la distribution des ECE aux placettes, CHE-1 superposée (version 6 indices en annexe de travail) | `Figure_07_distributions_ECE_avec_CHELSA.pdf`, `Figure_annexe_distributions_6indices_avec_CHELSA.pdf` (Matplotlib, 23/07) | aucun | `IFN_placette.csv` | à recréer |
-| Fig. 7 | R² entre bases des 6 indices aux placettes, avant et après downscaling | `Figure_05_correlation_inter_bases_ECE.pdf` (Matplotlib, 23/07) | aucun | `IFN_placette.csv` | à recréer |
-| Tab. I | Performances par base, modèle peuplement et peuplement + ECE | `Tableau_performances_entre_bases_peupl_et_ECE.docx` | aucun | `Synthese_globale.csv` des runs binaires peuplement et r070 | saisi ; valeurs vérifiées (± 0,001) |
-| Fig. 8a | IR des indices ECE par essence, moyenne des 5 bases | `Figure_10_IR_par_essence__A_CONFIRMER.pdf` (R, 21/07) | [`R/07_figures/figures_H1_binaire.R`](../R/07_figures/figures_H1_binaire.R) (figure 3, heatmap) | `RI_par_variable.csv`, run r070 binaire | à confirmer |
-| Fig. 8b | Sens de l'effet des ECE selon la base | `Figure_reponse_majoritaire_ECE_par_base.pdf` (Matplotlib, 24/07) | aucun | `RI_par_variable.csv`, run r070 binaire | à recréer |
-| Fig. 9 | IR des 6 ECE par base et par essence | `Figure_11_IR_essence_base_indice_2D.pdf` (Matplotlib, 24/07) | aucun | `RI_par_variable.csv`, run r070 binaire | à recréer |
+| Fig. 6 | Effet du downscaling sur la distribution des ECE aux placettes, CHE-1 superposée | `Figure_07_distributions_ECE_avec_CHELSA.pdf` (Matplotlib, 23/07) | [`python/figures/fig06_distributions_downscaling.py`](../python/figures/fig06_distributions_downscaling.py) (`ECE_INDICES` pour la version à 6 indices) | `IFN_placette.csv`, **31 600 placettes** (ERRATA 6) | recréé : 12 écarts-types identiques |
+| Fig. 7 | R² entre bases des 6 indices aux placettes, avant et après downscaling | `Figure_05_correlation_inter_bases_ECE.pdf` (Matplotlib, 23/07) | [`python/figures/fig07_correlation_inter_bases.py`](../python/figures/fig07_correlation_inter_bases.py) | `IFN_placette.csv`, 31 600 placettes | recréé : 36 R² identiques |
+| Tab. I | Performances par base, modèle peuplement et peuplement + ECE | `Tableau_performances_entre_bases_peupl_et_ECE.docx` (saisi) | [`R/07_figures/tableaux_performances.R`](../R/07_figures/tableaux_performances.R) | `Synthese_globale.csv` des runs binaires peuplement et r070 | calculé en v1.1 ; redonne le rapport à 0,001 près |
+| Fig. 8a | IR des indices ECE par essence, moyenne des 5 bases | `Figure_10_IR_par_essence__A_CONFIRMER.pdf` (R, 21/07) | [`R/07_figures/figures_H1_binaire.R`](../R/07_figures/figures_H1_binaire.R) (figure 3, heatmap) | `RI_par_variable.csv`, run r070 binaire | valeurs identiques au rapport ; mise en forme finale (noms latins, sans titre) non retrouvée |
+| Fig. 8b | Indice dominant et sens de son effet, par essence et par base | `Figure_reponse_majoritaire_ECE_par_base.pdf` (Matplotlib, 24/07) | [`python/figures/fig08b_reponse_majoritaire.py`](../python/figures/fig08b_reponse_majoritaire.py) | `RI_par_variable.csv`, run r070 binaire | recréé : 40 cellules identiques |
+| Fig. 9 | IR des 6 ECE par base et par essence | `Figure_11_IR_essence_base_indice_2D.pdf` (Matplotlib, 24/07) | [`python/figures/fig09_IR_essence_base.py`](../python/figures/fig09_IR_essence_base.py) | `RI_par_variable.csv`, run r070 binaire | recréé : barres et ordre identiques |
 
 ## Annexes
 
@@ -29,7 +31,7 @@ Statut : **retrouvé** (script identifié et importé) · **à confirmer** (scri
 |---|---|---|---|---|---|
 | Tab. A.I | Les 6 indices ECE | `1.1-Tableau_A1.pdf` | source LaTeX `1.1-Tableau_A1.tex` (projet, non importée) | aucune | saisi |
 | Tab. A.II | Inventaire des bases climatiques | `1.2-Tableau_A2.pdf` | source LaTeX `1.2-Tableau_A2.tex` (projet, non importée) | aucune | saisi ; citation CHELSA à corriger (ERRATA 14) |
-| Tab. A.III | (a) performances moyennes, (b) IR des variables de peuplement | inclus au rapport | aucun | runs r070 binaire | saisi ; (a) mal étiqueté (ERRATA 12) |
+| Tab. A.III | (a) performances moyennes, (b) IR des variables de peuplement | inclus au rapport (saisi) | [`R/07_figures/tableaux_performances.R`](../R/07_figures/tableaux_performances.R) | runs binaires peuplement et r070 | calculé en v1.1 ; (a) produit pour les deux modèles (ERRATA 12) |
 | Fig. A1 | Matrices de corrélation des 6 indices, une par base | `Fig_correlation_indices_ECE_par_base.png` | [`R/07_figures/71-Fig_correlation_indices_ECE_MM.R`](../R/07_figures/71-Fig_correlation_indices_ECE_MM.R) | `IFN_placette.csv` | retrouvé |
 | Fig. A.2 | Modèles binaires ECE contre moyennes saisonnières | `Fig_comparaison_ECE_vs_moyen_7metriques__*.pdf` | [`R/07_figures/81-Fig_comparaison_ECE_vs_moyen_7metriques_binaire.R`](../R/07_figures/81-Fig_comparaison_ECE_vs_moyen_7metriques_binaire.R) | runs r070 binaire et `ECE_Moyen_5bases_2015-2023_binaire` | retrouvé |
 | Fig. A.3 | Évolution des 6 indices en France, 5 bases, 1979-2024 | `Figure_tendance_ECE_toutes_bases_TENDANCES_1979-2024.pdf` (Matplotlib, 24/07) | aucun | NetCDF des indices post-traités | à recréer |

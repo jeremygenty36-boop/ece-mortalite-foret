@@ -96,17 +96,22 @@ drapeaux puis le source. Sessions des résultats du rapport :
 
 | Session | Runs produits (`PROJET/5-Resultats/5-Modeles/standard/<RUN_TAG>`) |
 |---|---|
-| `0N2-Session_France_binaire_complet.R` | `Mortalite_2015-2024_Peuplement_n1000_binaire`, `Mortalite_2015-2024_r070_n1000_binaire` |
+| `0N2-Session_France_binaire_complet.R` | `Mortalite_2015-2023_Peuplement_n1000_binaire`, `Mortalite_2015-2023_r070_n1000_binaire` |
 | `0M-Session_ECE_plus_Moyen_5bases_2015-2023_binaire.R` | `ECE_Moyen_5bases_2015-2023_binaire` |
 | `0K-Session_Comparaison_Classique_DIGI_2015-2023_binaire.R` | `Comparaison_Classique_DIGI_2015-2023_binaire` (usage dans le rapport à confirmer) |
 
 `0N2` source ensuite `3-Tableaux/7-…`, `2-Figures/8-…`, `20-…`, `22-…`, `9-…` et `3-Tableaux/19-…`.
-Sur le projet d'origine, les runs ont ensuite été rangés à la main dans `standard/Binaire/` ou
-`standard/Binomiale/` : les scripts de figures lisent `standard/<RUN_TAG>`.
+Les trois sessions excluent CHE-C et partagent le même échantillon de placettes (v1.1).
+Le moteur et les scripts de figures écrivent et lisent `standard/<RUN_TAG>` ; le mode de réponse
+est porté par le suffixe `_binaire` (sur le projet d'origine, les runs avaient été rangés à la main
+dans `standard/Binaire/` et `standard/Binomiale/`).
 
-## 07 · Figures
+## 07 · Figures et tableaux
 
-Voir [`figures_rapport.md`](figures_rapport.md).
+- R : `R/07_figures/` (Fig. 2, 8a, A1, A.2 ; `tableaux_performances.R` pour les Tableaux I et A.III).
+- Python : `python/figures/` (Fig. 1, 6, 7, 8b, 9), variables d'environnement décrites dans `_commun.py`.
+
+Détail : [`figures_rapport.md`](figures_rapport.md).
 
 ## Arborescence attendue des données
 

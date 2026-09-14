@@ -6,14 +6,15 @@ abstract: >-
   calee sur DIGITALIS) de SAFRAN, E-OBS et CHELSA ; calcul de six indices
   d'evenements climatiques extremes ; extraction aux placettes de l'inventaire
   forestier national ; modeles de mortalite par essence et par base climatique.
-  Version 1.0 : code tel qu'execute pour le rapport de stage (juillet 2026).
+  Version 1.1 : corrections posterieures au rapport de stage ; le code exécuté
+  pour le rapport (juillet 2026) correspond au tag v1.0-rapport.
 type: software
 authors:
   - family-names: Genty
     given-names: Jeremy
     affiliation: "Stage M2"
 license: CC-BY-4.0
-version: "1.0"
+version: "1.1"
 date-released: "2026-09-14"
 keywords:
   - evenements climatiques extremes

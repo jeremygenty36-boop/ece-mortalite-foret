@@ -21,7 +21,8 @@ correctement sous Windows mais peuvent afficher des accents erronés ailleurs.
 
 - Helpers de fusion NetCDF (`python/ece_helpers/`) : Python avec `numpy` et `netCDF4`
   (OSGeo4W sur la machine d'origine ; interpréteur configurable via `ECE_PYTHON`).
-- Figures (`python/figures/`) : `numpy`, `matplotlib` (les PDF du rapport indiquent Matplotlib 3.10.8).
+- Figures (`python/figures/`) : `numpy`, `pandas`, `matplotlib` (les PDF du rapport indiquent Matplotlib 3.10.8 ;
+  figures recréées testées avec Python 3.14, numpy 2.4, pandas 2.3, matplotlib 3.10.8).
 - Version de référence du downscaling (`python/downscaling/`) : voir son `requirements.txt`.
 
 ```bash

@@ -1,8 +1,8 @@
 # Indices d'événements climatiques extrêmes (ECE)
 
-Définitions **telles que codées** dans `R/04_indices_ece/` (références de ligne dans
-`1-ECE_EOBS.R`, logique identique dans les 6 scripts sauf mention). Les écarts avec
-l'intention méthodologique sont listés dans [`ERRATA.md`](../ERRATA.md).
+Définitions **telles que codées en v1.1** dans `R/04_indices_ece/` (logique identique dans les
+6 scripts). Références de ligne : `1-ECE_EOBS.R` de la v1.0 (tag `v1.0-rapport`). Écarts et
+corrections : [`ERRATA.md`](../ERRATA.md).
 
 ## Bases
 
@@ -24,7 +24,7 @@ Période calculée : 1979-2024. **Période de référence** (percentiles, Q10, S
 |---|---|---|---|---|---|
 | **TXx** | chaleur, intensité | max mensuel de Tmax (Climpact) | MAR-NOV | **max** des mois | l. 876 |
 | **TNn** | froid, intensité | min mensuel de Tmin (Climpact) | SEP(an-1) à MAI(an) | **min** des mois | l. 442, 882 |
-| **SPEI6** | sécheresse, intensité | SPEI à 6 mois (Climpact modifié : échelle 6 seule) | MAR-AOÛT | **moyenne** des mois (ERRATA 1) | l. 889 |
+| **SPEI6** | sécheresse, intensité | SPEI à 6 mois (Climpact modifié : échelle 6 seule) | MAR-AOÛT | **min** des mois (v1.0 : moyenne, ERRATA 1) | l. 889 |
 | **WG10P** | déficit hydrique, fréquence | % de jours où P − ETP < Q10 du même mois calendaire | MAR-AOÛT | **moyenne** des % mensuels | l. 503-530, 1086 |
 | **HWN** | chaleur, fréquence | nombre de vagues : ≥ 3 jours consécutifs Tmax > q90 | MAI-SEP | **somme** des épisodes | l. 918-925 |
 | **CWN** | froid, fréquence | nombre de vagues : ≥ 3 jours consécutifs Tmin < q10 | SEP(an-1) à MAI(an) | **somme** des épisodes | l. 918-925 |
@@ -42,6 +42,8 @@ Période calculée : 1979-2024. **Période de référence** (percentiles, Q10, S
   `Rs = 0,16 × √(Tmax − Tmin) × Ra × 23,884` (cal/cm²/j) ;
   Ra (rayonnement extraterrestre) calculé à la **latitude moyenne de la grille** (l. 340, ERRATA 2).
 - **Variables compagnes Climpact** `day_of_*` exclues à la lecture (corrige un artefact en « peigne » sur TXx).
+- **Traçabilité (v1.1)** : chaque indice agrégé porte l'attribut NetCDF global `agregation_annuelle`
+  (`max`, `min`, ...). Un SPEI6 portant un autre opérateur, ou sans attribut, est recalculé.
 
 ## Post-traitement (`11-ECE_POSTTRAITEMENT.R`)
 
