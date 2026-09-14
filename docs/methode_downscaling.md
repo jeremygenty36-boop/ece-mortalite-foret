@@ -58,7 +58,11 @@ t(j)    = src_1km(j) + delta
 La moyenne mensuelle est calée sur DIGITALIS (`moyenne_j t(j) = DIGI`) et la
 variabilité journalière est préservée.
 
-Le clamp `[0,001 ; 5]` évite les ratios explosifs là où la source est ~0.
+Le clamp `[0,001 ; 5]` évite les ratios explosifs là où la source est ~0. Aucune renormalisation
+n'est appliquée ensuite : dans les mailles bornées, le cumul mensuel n'est pas exactement celui de
+DIGITALIS (pluie sous-estimée si DIGITALIS dépasse 5 fois la source, ou si la source est sèche).
+Diagnostic sur SAFRAN 2015-2017 : 0,08 % des mailles par mois en moyenne, au plus 1,5 % (octobre
+2017), dans le quart sud-est et les Pyrénées-Atlantiques. Non diagnostiqué pour E-OBS et CHELSA.
 Les valeurs manquantes restent manquantes (NaN, jamais 0).
 
 ## 2. Les trois bases

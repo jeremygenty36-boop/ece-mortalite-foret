@@ -28,6 +28,50 @@ Statut : **corrigé** (code modifié en v1.1) · **documenté** (pas de changeme
 | 16 | chaîne | production des NetCDF journaliers SAF-8 absente | **ouvert** |
 | 17 | chaîne | sous-chemins de données historiques | documenté |
 
+## Portée sur les conclusions du rapport
+
+Bilan établi le 14/09/2026, sans relance du calcul. **Aucun écart relevé n'invalide les conclusions
+principales du rapport** : les calculs relus (saisons, seuils, fenêtre de 10 ans, agrégations aux
+placettes, modèle, IR) sont conformes à l'intention, à l'exception du SPEI6 ; les Tableaux I et A.III
+et les Fig. 6, 7, 8b et 9 recalculés depuis les sorties v1.0 redonnent les valeurs du
+rapport (à 0,001 près pour deux cases du Tableau I) ; les valeurs manquantes sont traitées comme telles. Trois points appellent en revanche une
+nuance, du plus au moins important.
+
+1. **Rôle de la sécheresse (écart 1).** Dans les 40 modèles du rapport (8 essences × 5 bases, modèle
+   binaire), SPEI6 n'est retenu dans pratiquement aucune itération (au plus 0,1 %) et son IR est nulle
+   partout, contre 43 % des itérations pour TXx, 14 % pour HWN, 10 % pour CWN et 3 % pour WG10P. Le
+   SPEI6 annuel ayant été calculé en moyenne de mars à août, l'intensité des sécheresses a été lissée :
+   cette absence peut en partie être un artefact. La conclusion la plus exposée est donc le faible poids
+   du stress hydrique ; WG10P, non concerné, en porte une partie. Non quantifiable sans relance.
+
+2. **Effet du downscaling de SAFRAN (écart 16).** D'après un Lisez-moi du projet, SAF-8 dériverait des
+   forçages SAFRAN horaires et SAF-DS des fichiers SIM2 quotidiens ; le script de production de SAF-8
+   n'a pas été retrouvé. Si les deux produits diffèrent (notamment pour les précipitations, par exemple
+   si la neige n'est pas comptée dans SAF-8), une partie de l'effet attribué au downscaling de SAFRAN
+   serait une différence de produit, surtout pour les indices hydriques : l'écart-type de WG10P baisse
+   de 39 % de SAF-8 à SAF-DS, contre 20 % d'EOB-10 à EOB-DS. Les comparaisons E-OBS ne sont pas
+   concernées. Hypothèse non vérifiée.
+
+3. **Comparaison statistique des bases (écarts 8 et 9).** Le test t du rapport apparie les bases par
+   essence, sur les moyennes des 1 000 itérations : il reste valide malgré les graines et les
+   échantillons différents entre bases, dont l'effet est négligeable (moins de 0,5 % des lignes). Avec
+   8 essences, un résultat non significatif ne démontre toutefois pas l'équivalence des bases. La
+   conclusion pratique tient : les écarts d'AUC moyenne entre bases ne dépassent pas 0,006.
+
+**Sans effet attendu sur les conclusions** :
+- bornes du facteur de pluie du downscaling : aucune base n'est renormalisée, mais le cumul mensuel est
+  conservé par construction hors mailles bornées ; diagnostic SAFRAN 2015-2017 : 0,08 % des mailles par
+  mois en moyenne, maximum 1,5 % (octobre 2017, mois très sec), dans les Alpes du Sud, en Provence et
+  dans les Pyrénées-Atlantiques ; non diagnostiqué pour EOB-DS et CHE-C (écart 5) ;
+- modifications de Climpact : une erreur d'unité ou de longueur de série aurait produit des valeurs
+  aberrantes visibles, écartées par le post-traitement et absentes des sorties (écart 4) ;
+- définition de l'hiver pour TNn et CWN : le minimum ou la somme sur 10 ans est peu sensible à un
+  décalage d'une saison (écart 3) ;
+- seuil des vagues de chaleur et de froid (au moins 3 jours contre plus de 3 dans Carletti et al. 2026),
+  identique pour toutes les bases ;
+- exclusion de la Corse, latitude unique du rayonnement (indices standardisés par pixel), étiquettes des
+  tableaux, effectif « 34 255 placettes », terme « bootstrap », citation CHELSA (écarts 2, 6, 7, 10 à 14).
+
 ## Détail
 
 ### Indices ECE

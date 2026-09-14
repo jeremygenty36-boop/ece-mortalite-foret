@@ -1,5 +1,11 @@
 # Journal des versions
 
+## Depuis v1.1 (documentation)
+
+- `ERRATA.md` : section « Portée sur les conclusions du rapport » (fréquence de sélection du SPEI6,
+  origine des produits SAFRAN, portée du test entre bases, écarts sans effet attendu).
+- `docs/methode_downscaling.md` : absence de renormalisation et diagnostic des bornes du facteur de pluie.
+
 ## v1.1 (version publiée)
 
 Corrections des écarts relevés dans [`ERRATA.md`](ERRATA.md). **Le code v1.1 n'a pas été
