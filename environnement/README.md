@@ -2,17 +2,11 @@
 
 ## R
 
-Les calculs du rapport ont tourné sous **Windows**, dans R, sur le serveur de calcul du
-laboratoire. La version exacte de R et des paquets **n'a pas été enregistrée** au moment des
-calculs. Pour la figer, lancer une fois, sur la machine de calcul, dans la console R :
-
-```r
-writeLines(capture.output(sessionInfo()), "environnement/sessionInfo_calcul.txt")
-```
-
-puis versionner le fichier produit. Paquets utilisés par les scripts du dépôt : voir
-[`paquets_R.txt`](paquets_R.txt). Climpact et ses paquets pcic : voir
-[`../third_party/climpact/README.md`](../third_party/climpact/README.md).
+Les calculs du rapport ont tourné sous **Windows, R 4.3.1**, sur le serveur de calcul du laboratoire ;
+les figures R et les tests locaux sous **R 4.4.3 sur Mac**. La session n'avait
+pas été enregistrée : versions reconstituées à partir des fichiers produits, avec leur niveau de preuve,
+dans [`versions_R.md`](versions_R.md). Liste des paquets appelés : [`paquets_R.txt`](paquets_R.txt).
+Climpact et ses paquets pcic : [`../third_party/climpact/README.md`](../third_party/climpact/README.md).
 
 Certains scripts sont encodés en Latin-1 avec fins de ligne Windows (CRLF) ; ils se lisent
 correctement sous Windows mais peuvent afficher des accents erronés ailleurs.

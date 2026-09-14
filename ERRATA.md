@@ -24,7 +24,7 @@ Statut : **corrigé** (code modifié en v1.1) · **documenté** (pas de changeme
 | 12 | doc | Tableau A.III (a) mal étiqueté | **corrigé** : tableaux calculés |
 | 13 | doc | Tableau I, ligne « Différence max » | **corrigé** : tableaux calculés |
 | 14 | doc | citation CHELSA « Karger et al. 2023 » | documenté |
-| 15 | chaîne | scripts de figures perdus | **corrigé** pour Fig. 6, 7, 8b, 9 ; **ouvert** pour Fig. 3, 4, 5, A.3, A.4 |
+| 15 | chaîne | scripts de figures perdus | **corrigé** pour Fig. 6, 7, 8b, 9 ; **ouvert** pour Fig. 3, 4, 5, A.3, A.4 (données plus accessibles) |
 | 16 | chaîne | production des NetCDF journaliers SAF-8 absente | **ouvert** |
 | 17 | chaîne | sous-chemins de données historiques | documenté |
 
@@ -107,7 +107,7 @@ Statut : **corrigé** (code modifié en v1.1) · **documenté** (pas de changeme
 
 15. **Scripts de figures perdus.** Recréés et validés sur les données v1.0 : Fig. 6, 7, 8b, 9.
     Restent à recréer : Fig. 3 (schéma), Fig. 4 et 5 (NetCDF 2014), Fig. A.3 et A.4 (NetCDF des
-    indices). La Fig. 8a (heatmap des IR) a les mêmes valeurs que la sortie de
+    indices) ; ces données sont sur le stockage du laboratoire, qui n'est plus accessible. La Fig. 8a (heatmap des IR) a les mêmes valeurs que la sortie de
     `R/07_figures/figures_H1_binaire.R`, avec une mise en forme différente. Voir `docs/figures_rapport.md`.
 
 ### Chaîne de production
