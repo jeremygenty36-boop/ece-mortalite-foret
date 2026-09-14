@@ -32,6 +32,13 @@ données synthétiques ou sur un extrait des données réelles (voir `tests/`).
   données v1.0 : écarts-types, R², IR et cellules affichés identiques aux PDF du rapport.
 - `tests/test_posttraitement_spei6.R`, `tests/test_moteur_echantillon.R`.
 
+### Publication
+
+- Licences : code sous MIT (`LICENSE`), documentation sous CC-BY 4.0 (`LICENSE-docs`), fichiers
+  Climpact modifiés sous GPL-3 (`third_party/climpact/LICENSE`).
+- Commentaires internes retirés (identifiants d'utilisateurs du serveur de calcul, chemins personnels).
+- `.gitattributes` : fins de ligne et encodages des scripts conservés tels quels.
+
 ### Non modifié
 
 - Méthode Delta, interpolations, définitions de TXx, TNn, WG10P, HWN et CWN, ETP de Turc
