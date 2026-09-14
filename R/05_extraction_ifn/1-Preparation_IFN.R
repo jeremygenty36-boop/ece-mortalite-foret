@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail/3-IFN/1-Preparation_IFN.R")
+# source("R/05_extraction_ifn/1-Preparation_IFN.R")   # depuis la racine du depot
 # ==============================================================================
 # PREPARATION BASE IFN (dfCCRNv2) -- agregation a l'echelle de la placette
 #
@@ -24,11 +24,13 @@
 # USAGE : sourcer depuis CALCULUS ou Mac (chemins auto-detectes).
 # ==============================================================================
 
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 library(data.table)
 library(terra)
 
 # --- CHEMINS ------------------------------------------------------------------
-.PFX    <- if (dir.exists("S:/Projets")) "S:" else "/Volumes/_donnees"
+# .PFX : fourni par config/chemins.R
 DIR_IFN <- file.path(.PFX, "Projets/stage_JeremyG/3-Donnees/6-IFN/dfCCRNv2")
 DIR_OUT <- file.path(.PFX, "Projets/stage_JeremyG/3-Donnees/6-IFN")
 F_PH    <- file.path(.PFX, "BD_SIG/nutrition/France/2014/ph_ess2_L93.tif")

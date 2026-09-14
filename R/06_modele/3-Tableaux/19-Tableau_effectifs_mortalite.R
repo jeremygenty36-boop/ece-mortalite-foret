@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail_bis/4-Modeles/1-Mortalite/3-Tableaux/19-Tableau_effectifs_mortalite.R")
+# source("R/06_modele/3-Tableaux/19-Tableau_effectifs_mortalite.R")   # depuis la racine du depot
 # ============================================================================
 # TABLEAU DES EFFECTIFS DE MORTALITE par espece, pour le jeu EXACTEMENT modelise.
 #   Memes filtres que 1-Modele_mortalite_optimise.R :
@@ -8,9 +8,11 @@
 #     n_placettes | n_plac_mortalite | pct_plac_mortalite | n_tiges | n_morts | pct_tiges_mortes
 #   Sorties : <run>/2-Syntheses/Effectifs_mortalite_<run>.csv  (+ .xlsx si openxlsx)
 # ============================================================================
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({ library(data.table) })
 
-if (!exists(".PFX")) .PFX <- if (dir.exists("S:/Projets")) "S:" else "/Volumes/_donnees"
+# .PFX : fourni par config/chemins.R
 if (!exists("F_IFN"))   # surchargeable : ne PAS ecraser la base d'une variante
   F_IFN <- file.path(.PFX, "Projets/stage_JeremyG/3-Donnees/6-IFN/IFN_placette.csv")
 if (!exists("RUN_TAG")) RUN_TAG <- "Mortalite_2015-2024_r070_n1000"

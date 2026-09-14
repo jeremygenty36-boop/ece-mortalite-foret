@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail_bis/4-Modeles/1-Mortalite/2-Figures/22-Fig_synthese_IR_modele.R")
+# source("R/06_modele/2-Figures/22-Fig_synthese_IR_modele.R")   # depuis la racine du depot
 # ============================================================================
 # TABLEAU SYNTHETIQUE IR PAR ESPECE x VARIABLE.
 #   Lit RI_par_variable.csv ; produit un tableau heatmap :
@@ -8,9 +8,11 @@
 #     Couleur  = vert/rose pour max/min par colonne (parmi lignes avec RI > 0)
 #   Sortie : PNG dans Figures/2-Importance_relative/
 # ============================================================================
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({ library(data.table); library(ggplot2) })
 
-if (!exists(".PFX")) .PFX <- if (dir.exists("S:/Projets")) "S:" else "/Volumes/_donnees"
+# .PFX : fourni par config/chemins.R
 if (!exists("RUN_TAG")) RUN_TAG <- "Mortalite_1989-2024_r075"
 .VARIANTE_DIR <- if (grepl("_dominants$", RUN_TAG)) "dominants" else if (grepl("_domines$", RUN_TAG)) "domines" else if (grepl("_pur080$", RUN_TAG)) "pur080" else "standard"  # niveau jeu de donnees (cf 6-Extraction_bases_variantes.R)
 DIRM_SY <- file.path(.PFX, "Projets/stage_JeremyG/5-Resultats/5-Modeles", .VARIANTE_DIR, RUN_TAG, "2-Syntheses")

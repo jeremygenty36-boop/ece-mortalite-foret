@@ -5,12 +5,14 @@
 # A lancer UNE SEULE FOIS
 # ==============================================================================
 
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 library(terra)
 
 if (!requireNamespace("geodata", quietly=TRUE)) install.packages("geodata")
 library(geodata)
 
-OUT_DIR <- file.path("S:", "Projets", "stage_JeremyG", "4-Travail", "3-Limites_geo")
+OUT_DIR <- dirname(MASQUE_FRANCE_GPKG)
 f_out   <- file.path(OUT_DIR, "France_GADM_L0.gpkg")
 
 if (file.exists(f_out)) {

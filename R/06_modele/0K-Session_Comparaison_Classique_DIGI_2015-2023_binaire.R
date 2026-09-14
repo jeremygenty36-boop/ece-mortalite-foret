@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail_bis/4-Modeles/1-Mortalite/0K-Session_Comparaison_Classique_DIGI_2015-2023_binaire.R")
+# source("R/06_modele/0K-Session_Comparaison_Classique_DIGI_2015-2023_binaire.R")   # depuis la racine du depot
 # ==============================================================================
 # CLIMAT MOYEN DIGITALIS (Classique) -- VERSION BINAIRE (mort_bin)
 #   Clone de 0K-...2015-2023.R, en MODE_REPONSE="binaire".
@@ -6,9 +6,9 @@
 #   Sert a comparer ECE vs climat moyen dans le cadre BINAIRE, memes placettes.
 #   RUN_TAG suffixe _binaire -> n'ecrase pas le run binomial.
 # ==============================================================================
-.DIR <- if (dir.exists("S:/Projets"))
-  "S:/Projets/stage_JeremyG/4-Travail_bis/4-Modeles/1-Mortalite" else
-  "/Volumes/_donnees/Projets/stage_JeremyG/4-Travail_bis/4-Modeles/1-Mortalite"
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
+.DIR <- file.path(DEPOT, "R", "06_modele")
 
 MODE_REPONSE      <- "binaire"
 RUN_TAG           <- "Comparaison_Classique_DIGI_2015-2023_binaire"

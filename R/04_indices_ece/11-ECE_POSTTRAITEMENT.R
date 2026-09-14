@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail/2-ECE/0-Lanceurs/11-ECE_POSTTRAITEMENT.R")
+# source("R/04_indices_ece/11-ECE_POSTTRAITEMENT.R")   # depuis la racine du depot
 # ==============================================================================
 # POST-TRAITEMENT des sorties ECE : nettoyage des fichiers ECE_<base>_*.nc.
 #
@@ -18,6 +18,8 @@
 
 # --- CONFIG : base a traiter --------------------------------------------------
 # Surchargeable AVANT source() : poser BASE et (optionnel) INDICES_PT.
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 if (!exists("BASE")) BASE <- "DIGI_SAF"   # CHELSA | DIGI_EOBS | DIGI_SAF | DIGI_CHEL
 
 # 2026-05-28 : decision avec maitre de stage - passer les valeurs aberrantes
@@ -26,12 +28,12 @@ if (!exists("BASE")) BASE <- "DIGI_SAF"   # CHELSA | DIGI_EOBS | DIGI_SAF | DIGI
 APPLIQUER_CLAMP <- TRUE
 
 # --- CHEMINS ------------------------------------------------------------------
-.PFX      <- if (dir.exists("S:/Projets")) "S:" else "/Volumes/_donnees"  # CALCULUS (S:) ou Mac (NAS monte)
+# .PFX : fourni par config/chemins.R
 ROOT      <- file.path(.PFX, "Projets/stage_JeremyG/5-Resultats/3-ECE/1-ECE_1979-2024")
 OUT_DIRS  <- list(EOBS="1-EOBS_11km", SAFRAN="2-SAFRAN_8km",
                   CHELSA="3-CHELSA_1km", DIGI_EOBS="4-DIGI_EOBS_1km",
                   DIGI_SAF="5-DIGI_SAF_1km", DIGI_CHEL="6-DIGI_CHEL_1km")
-MASQUE_F  <- file.path(.PFX, "Projets/stage_JeremyG/4-Travail/1-Bases_de_donnees/3-Limites_geo/France_GADM_L0.gpkg")
+MASQUE_F  <- MASQUE_FRANCE_GPKG
 
 # Plages physiques valides par indice (cf VALID_RANGES des scripts ECE)
 RANGES <- list(

@@ -3,9 +3,11 @@
 # Verifie : presence, taille minimale, et liste les manquants
 # ======================================================================
 
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 library(terra)
 
-PATH_OUT <- "S:/Projets/stage_JeremyG/3-Donnees/2-CHELSA/3-1960_2026_CHELSA_FR/"
+PATH_OUT <- file.path(PROJET, "3-Donnees/2-CHELSA/3-1960_2026_CHELSA_FR/")
 
 DATE_DEBUT       <- as.Date("1979-01-01")
 DATE_FIN         <- as.Date("2025-12-31")

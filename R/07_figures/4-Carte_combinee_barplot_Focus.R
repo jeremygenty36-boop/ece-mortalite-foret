@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail_bis/5-Figures/4-IFN/4-Carte_combinee_barplot_Focus.R")
+# source("R/07_figures/4-Carte_combinee_barplot_Focus.R")   # depuis la racine du depot
 # ============================================================================
 # (A) Carte COMBINEE : les 8 essences ETUDIEES sur une seule carte (couleur
 #     par essence ; essence dominante de la placette).
@@ -7,13 +7,15 @@
 # (C) Figure COMBINEE (a) carte + (b) barplot.
 # Corse hors etude (dep 2A/2B). Projection Lambert-93. Palette partagee.
 # ============================================================================
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({
   library(data.table); library(sf); library(ggplot2); library(grid); library(patchwork); library(ggtext)
 })
 
-.PFX    <- if (dir.exists("S:/Projets")) "S:" else "/Volumes/_donnees"
+# .PFX : fourni par config/chemins.R
 F_IFN   <- file.path(.PFX, "Projets/stage_JeremyG/3-Donnees/6-IFN/IFN_placette.csv")
-F_FOND  <- file.path(.PFX, "Projets/stage_JeremyG/4-Travail_bis/1-Bases_de_donnees/3-Limites_geo/France_GADM_L0.gpkg")
+F_FOND  <- MASQUE_FRANCE_GPKG
 DIR_OUT <- file.path(.PFX, "Projets/stage_JeremyG/5-Resultats/6-Figures et tableaux redaction/2-Materiel_methodes")
 if (!dir.exists(DIR_OUT)) dir.create(DIR_OUT, recursive=TRUE)
 

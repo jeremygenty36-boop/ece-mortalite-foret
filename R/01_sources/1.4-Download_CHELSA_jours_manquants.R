@@ -22,18 +22,20 @@
 #   curl::multi_download -> crop France -> writeRaster
 # ==============================================================================
 
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 if (!requireNamespace("curl",  quietly=TRUE)) install.packages("curl")
 if (!requireNamespace("terra", quietly=TRUE)) install.packages("terra")
 library(curl)
 library(terra)
 
 # Dossiers de destination (structure existante sur S:)
-DIR_TASMAX <- "S:/Projets/stage_JeremyG/2-1960-2026/tasmax"
-DIR_TASMIN <- "S:/Projets/stage_JeremyG/2-1960-2026/tasmin"
-DIR_PR     <- "S:/Projets/stage_JeremyG/2-1960-2026/pr"
+DIR_TASMAX <- file.path(PROJET, "2-1960-2026/tasmax")
+DIR_TASMIN <- file.path(PROJET, "2-1960-2026/tasmin")
+DIR_PR     <- file.path(PROJET, "2-1960-2026/pr")
 
 # Dossier temporaire (download brut avant crop)
-PATH_TMP   <- "S:/Projets/stage_JeremyG/3-Donnees/2-CHELSA/1-tmp/manquants/"
+PATH_TMP   <- file.path(PROJET, "3-Donnees/2-CHELSA/1-tmp/manquants/")
 dir.create(PATH_TMP, recursive=TRUE, showWarnings=FALSE)
 
 # URL de base (meme serveur que 2-Download_CHELSA_manquants.R)

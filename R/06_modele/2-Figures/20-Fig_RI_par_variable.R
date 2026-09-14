@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail_bis/4-Modeles/1-Mortalite/2-Figures/20-Fig_RI_par_variable.R")
+# source("R/06_modele/2-Figures/20-Fig_RI_par_variable.R")   # depuis la racine du depot
 # ============================================================================
 # IMPORTANCE RELATIVE PAR VARIABLE INDIVIDUELLE (toutes variables : ECE + fixes).
 #   Meme structure que 5-Fig_Carletti_RI.R mais avec chaque variable separee,
@@ -6,9 +6,11 @@
 #   Lit RI_par_variable.csv (produit par 1-Modele_mortalite.R).
 #   Sortie : 5-Resultats/5-Modeles/Figures/Fig_RI_par_variable.png
 # ============================================================================
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({ library(data.table); library(ggplot2) })
 
-if (!exists(".PFX")) .PFX <- if (dir.exists("S:/Projets")) "S:" else "/Volumes/_donnees"
+# .PFX : fourni par config/chemins.R
 if (!exists("RUN_TAG")) RUN_TAG <- "Mortalite_2009-2023_r075"
 .VARIANTE_DIR <- if (grepl("_dominants$", RUN_TAG)) "dominants" else if (grepl("_domines$", RUN_TAG)) "domines" else if (grepl("_pur080$", RUN_TAG)) "pur080" else "standard"  # niveau jeu de donnees (cf 6-Extraction_bases_variantes.R)
 DIRM    <- file.path(.PFX, "Projets/stage_JeremyG/5-Resultats/5-Modeles", .VARIANTE_DIR, RUN_TAG)

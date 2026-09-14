@@ -1,8 +1,10 @@
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({
   library(terra)
 })
 
-DST_DIGI_EOBS <- "D:/Stage_JeremyG/ECE_data/4-DIGI_EOBS_1km"
+DST_DIGI_EOBS <- file.path(LOCAL_ROOT, "ECE_data/4-DIGI_EOBS_1km")
 COMPRESSION   <- 5
 
 META <- list(

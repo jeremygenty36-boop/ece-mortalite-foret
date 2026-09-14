@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail_bis/4-Modeles/1-Mortalite/2-Figures/9-Courbes_reponse.R")
+# source("R/06_modele/2-Figures/9-Courbes_reponse.R")   # depuis la racine du depot
 # ============================================================================
 # COURBES DE REPONSE du modele de mortalite.
 #   Pour chaque espece x base, on REFIT un modele "consensus" sur l'ensemble des
@@ -11,8 +11,10 @@
 # IMPORTANT : garder VAR_FIXES / PROP_G_MIN / filtre SYNCHRONISES avec 1-Modele_mortalite.R.
 # Sorties : 5-Resultats/5-Modeles/Figures/  et  .../Mortalite/Courbes_reponse.csv
 # ============================================================================
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({ library(data.table); library(ggplot2) })
-if (!exists(".PFX")) .PFX <- if (dir.exists("S:/Projets")) "S:" else "/Volumes/_donnees"
+# .PFX : fourni par config/chemins.R
 if (!exists("RUN_TAG")) RUN_TAG <- "Mortalite_2009-2023_r075"
 .VARIANTE_DIR <- if (grepl("_dominants$", RUN_TAG)) "dominants" else if (grepl("_domines$", RUN_TAG)) "domines" else if (grepl("_pur080$", RUN_TAG)) "pur080" else "standard"  # niveau jeu de donnees (cf 6-Extraction_bases_variantes.R)
 if (!exists("F_IFN")) {  # surchargeable ; sinon DEDUIT de la variante (RUN_TAG) -- evite d'utiliser la base standard pour dominants/domines/pur080

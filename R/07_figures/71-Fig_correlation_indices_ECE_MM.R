@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail_bis/4-Modeles/1-Mortalite/2-Figures/71-Fig_correlation_indices_ECE_MM.R")
+# source("R/07_figures/71-Fig_correlation_indices_ECE_MM.R")   # depuis la racine du depot
 # ==============================================================================
 # M&M : correlation des 6 indices ECE -- UN CARRE (matrice complete) PAR BASE.
 #   Illustration du filtre de colinearite : dans chaque base, les paires
@@ -12,9 +12,11 @@
 #
 #   NON TESTE (job en cours) : a lancer APRES l'overnight. Sortie CALCULUS = foi.
 # ==============================================================================
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({ library(data.table); library(ggplot2) })
 
-if (!exists(".PFX"))      .PFX      <- if (dir.exists("S:/Projets")) "S:" else "/Volumes/_donnees"
+# .PFX : fourni par config/chemins.R
 if (!exists("SEUIL_COR")) SEUIL_COR <- 0.70
 if (!exists("BASES"))     BASES     <- c("EOB10", "SAF8", "CHE1", "EOBDS", "SAFDS")  # natifs puis DS ; CHE-C exclue
 CAMP_MIN <- 2015L; CAMP_MAX <- 2023L

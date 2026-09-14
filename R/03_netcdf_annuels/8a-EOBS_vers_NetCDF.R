@@ -1,3 +1,5 @@
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({
   library(terra)
   library(lubridate)
@@ -5,8 +7,8 @@ suppressPackageStartupMessages({
   library(rnaturalearth)
 })
 
-ROOT_LOC <- "D:/Stage_JeremyG"
-ROOT_SRV <- "S:/Projets/stage_JeremyG"
+ROOT_LOC <- LOCAL_ROOT
+ROOT_SRV <- PROJET
 
 SRC_EOBS  <- file.path(ROOT_SRV, "3-Donnees", "3-E_OBS", "2-1950_2024_EOBS_FR")
 DST_EOBS  <- file.path(ROOT_LOC, "ECE_data", "1-EOBS_11km")

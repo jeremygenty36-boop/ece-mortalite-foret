@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail_bis/3-IFN/3c-Extraction_Moyennes_par_base.R")
+# source("R/05_extraction_ifn/3c-Extraction_Moyennes_par_base.R")   # depuis la racine du depot
 # ==============================================================================
 # EXTRACTION MOYENNES SAISONNIERES *PAR BASE* -> PLACETTES IFN
 #
@@ -35,13 +35,15 @@
 # LOURD : lit tous les journaliers 1 km des bases demandees. Sequentiel.
 # Non testable sur Mac (donnees sur CALCULUS). Lancer d'abord ECE_BASES<-"SAFDS".
 # ==============================================================================
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({
   library(terra); library(data.table); library(lubridate)
 })
 
 # --- CHEMINS ------------------------------------------------------------------
-.PFX     <- if (dir.exists("S:/Projets")) "S:" else "/Volumes/_donnees"
-ECE_ROOT <- if (dir.exists("D:/Stage_JeremyG/ECE_data")) "D:/Stage_JeremyG/ECE_data" else
+# .PFX : fourni par config/chemins.R
+ECE_ROOT <- if (dir.exists(file.path(LOCAL_ROOT, "ECE_data"))) file.path(LOCAL_ROOT, "ECE_data") else
             file.path(.PFX, "Projets/stage_JeremyG/ECE_data")
 F_IFN    <- file.path(.PFX, "Projets/stage_JeremyG/3-Donnees/6-IFN/IFN_placette.csv")
 DIR_CACHE <- file.path(.PFX, "Projets/stage_JeremyG/3-Donnees/6-IFN/_cache_moyennes_par_base")

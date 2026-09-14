@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail_bis/4-Modeles/1-Mortalite/0N2-Session_France_binaire_complet.R")
+# source("R/06_modele/0N2-Session_France_binaire_complet.R")   # depuis la racine du depot
 # =============================================================================
 # FRANCE -- MODELE BINAIRE COMPLET (placette morte si >=1 arbre mort), n=1000
 #
@@ -10,11 +10,9 @@
 #   Le run binomial existant n'est PAS ecrase (RUN_TAG different).
 # =============================================================================
 
-.DIR <- if (dir.exists("S:/Projets")) {
-  "S:/Projets/stage_JeremyG/4-Travail_bis/4-Modeles/1-Mortalite"
-} else {
-  "/Volumes/_donnees/Projets/stage_JeremyG/4-Travail_bis/4-Modeles/1-Mortalite"
-}
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
+.DIR <- file.path(DEPOT, "R", "06_modele")
 
 .args <- commandArgs(trailingOnly = TRUE)
 if (!exists("VARIANTE"))
@@ -26,7 +24,7 @@ if (!exists("VARIANTE"))
   pur080    = list(fichier = "IFN_placette_pur080.csv",    suffixe = "_pur080")
 )
 if (!VARIANTE %in% names(.VARIANTES)) stop("VARIANTE inconnue : '", VARIANTE, "'")
-if (!exists(".PFX")) .PFX <- if (dir.exists("S:/Projets")) "S:" else "/Volumes/_donnees"
+# .PFX : fourni par config/chemins.R
 F_IFN <- file.path(.PFX, "Projets/stage_JeremyG/3-Donnees/6-IFN", .VARIANTES[[VARIANTE]]$fichier)
 .SUF  <- .VARIANTES[[VARIANTE]]$suffixe
 if (!file.exists(F_IFN)) stop("Base IFN absente : ", F_IFN)

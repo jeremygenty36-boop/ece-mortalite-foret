@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail/1-Bases_de_donnees/1-Telechargement/6-Diagnostic_TIF_CHELSA_corrompus.R")
+# source("R/01_sources/1.3-Diagnostic_TIF_CHELSA_corrompus.R")   # depuis la racine du depot
 # ==============================================================================
 # DIAGNOSTIC TIFS CHELSA CORROMPUS - scan global tasmin / tasmax / pr
 #
@@ -14,14 +14,16 @@
 # Sortie : CSV par variable, dans le meme dossier
 # ==============================================================================
 
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({
   library(terra)
   library(parallel)
 })
 
-.PFX <- if (dir.exists("S:/Projets")) "S:" else "/Volumes/_donnees"
+# .PFX : fourni par config/chemins.R
 DIR_BASE <- file.path(.PFX, "Projets/stage_JeremyG/3-Donnees/2-CHELSA/2-1960_2026_CHELSA_FR")
-DIR_OUT  <- file.path(.PFX, "Projets/stage_JeremyG/4-Travail/1-Bases_de_donnees/1-Telechargement")
+DIR_OUT  <- file.path(PROJET, "5-Resultats", "0-Diagnostics_sources")
 N_WORKERS <- 8L
 
 VARS <- c("tasmin", "tasmax", "pr")

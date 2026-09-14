@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail/3-IFN/3-Extraction_ECE_placettes.R")
+# source("R/05_extraction_ifn/3-Extraction_ECE_placettes.R")   # depuis la racine du depot
 # ==============================================================================
 # EXTRACTION ECE AUX PLACETTES IFN  -- fenetre glissante N_ANS ans
 #
@@ -24,11 +24,13 @@
 # Lancer sur CALCULUS (bases 1 km = gros rasters).
 # ==============================================================================
 
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages(library(terra))
 suppressPackageStartupMessages(library(data.table))
 
 # --- CHEMINS ------------------------------------------------------------------
-.PFX    <- if (dir.exists("S:/Projets")) "S:" else "/Volumes/_donnees"
+# .PFX : fourni par config/chemins.R
 DIR_ECE <- file.path(.PFX, "Projets/stage_JeremyG/5-Resultats/3-ECE/1-ECE_1979-2024")
 F_IFN   <- file.path(.PFX, "Projets/stage_JeremyG/3-Donnees/6-IFN/IFN_placette.csv")
 

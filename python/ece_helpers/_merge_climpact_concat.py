@@ -7,7 +7,7 @@
 #
 # USAGE (depuis R) :
 #   system('"C:\\OSGeo4W64\\bin\\python.exe" '
-#          '"S:\\Projets\\stage_JeremyG\\4-Travail\\2-ECE\\_merge_climpact_concat.py" '
+#          '"<depot>\\python\\ece_helpers\\_merge_climpact_concat.py" '
 #          '"S:/.../climpact_raw_1979-1987/tnn_MON_xxx.nc:1979" '   # tag:debut_effectif
 #          '"S:/.../climpact_raw_1987-1996/tnn_MON_xxx.nc:1988" '
 #          '...                                                   '

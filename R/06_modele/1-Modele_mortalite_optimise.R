@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail_bis/4-Modeles/1-Mortalite/1-Modele_mortalite_optimise.R")
+# source("R/06_modele/1-Modele_mortalite_optimise.R")   # depuis la racine du depot
 # ==============================================================================
 # MODELE GLM MORTALITE -- PARALLELISME PAR ESPECE
 #
@@ -29,6 +29,8 @@
 #     BASES_EXCLUDE <- "SAFDS"
 # ==============================================================================
 
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({
   library(data.table)
   library(MLmetrics)
@@ -36,7 +38,7 @@ suppressPackageStartupMessages({
 })
 
 # --- CHEMINS ------------------------------------------------------------------
-if (!exists(".PFX")) .PFX <- if (dir.exists("S:/Projets")) "S:" else "/Volumes/_donnees"
+# .PFX : fourni par config/chemins.R
 # F_IFN surchargeable : permet de modeliser une variante d'extraction des
 # placettes (base dominants, essence pure...) sans toucher au coeur.
 if (!exists("F_IFN"))

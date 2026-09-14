@@ -7,7 +7,7 @@
 #
 # USAGE (depuis R sur CALCULUS) :
 #   system('"C:\\OSGeo4W64\\bin\\python.exe" '
-#          '"S:\\Projets\\stage_JeremyG\\4-Travail\\2-ECE\\_fusion_etp_concat.py" '
+#          '"<depot>\\python\\ece_helpers\\_fusion_etp_concat.py" '
 #          '"D:/Stage_JeremyG/ECE_merge/CHELSA" '
 #          '"CHELSA_etp_turc_1979-2024.nc"')
 #

@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail_bis/4-Modeles/1-Mortalite/2-Figures/8-Figure_tableau_modele.R")
+# source("R/06_modele/2-Figures/8-Figure_tableau_modele.R")   # depuis la racine du depot
 # ============================================================================
 # FIGURE-TABLEAU du modele de mortalite (structure imbriquee facon Carletti) :
 #   un tableau par espece ; pour chaque base climatique, AUC / Sensibilite /
@@ -9,8 +9,10 @@
 #   NE MODIFIE AUCUNE DONNEE : lit Tableau_synthese_modele.csv (script 7) et le met
 #   en page. Sortie PDF multi-pages. Sorties dans 5-Resultats/5-Modeles/Figures/.
 # ============================================================================
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({ library(data.table); library(ggplot2) })
-if (!exists(".PFX")) .PFX <- if (dir.exists("S:/Projets")) "S:" else "/Volumes/_donnees"
+# .PFX : fourni par config/chemins.R
 if (!exists("RUN_TAG")) RUN_TAG <- "Mortalite_2009-2023_r075"
 .VARIANTE_DIR <- if (grepl("_dominants$", RUN_TAG)) "dominants" else if (grepl("_domines$", RUN_TAG)) "domines" else if (grepl("_pur080$", RUN_TAG)) "pur080" else "standard"  # niveau jeu de donnees (cf 6-Extraction_bases_variantes.R)
 DIRM    <- file.path(.PFX, "Projets/stage_JeremyG/5-Resultats/5-Modeles", .VARIANTE_DIR, RUN_TAG)

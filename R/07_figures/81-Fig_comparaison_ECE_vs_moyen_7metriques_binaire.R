@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail_bis/4-Modeles/1-Mortalite/2-Figures/81-Fig_comparaison_ECE_vs_moyen_7metriques_binaire.R")
+# source("R/07_figures/81-Fig_comparaison_ECE_vs_moyen_7metriques_binaire.R")   # depuis la racine du depot
 # ==============================================================================
 # Objectif (iv), REPONSE BINAIRE, format "script 35" enrichi a 7 metriques.
 #   Compare ECE (6 indices d'extremes) vs MOYENNES SAISONNIERES, sur les MEMES
@@ -10,9 +10,11 @@
 #   -> 6 metriques de perf + IR climat = 7 metriques.
 # CHE-C exclue. ASCII pur. Sortie : <run ECE>/Figures/Perf_ECE_vs_moyen/.
 # ==============================================================================
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({ library(data.table); library(ggplot2); library(patchwork) })
 
-if (!exists(".PFX")) .PFX <- if (dir.exists("S:/Projets")) "S:" else "/Volumes/_donnees"
+# .PFX : fourni par config/chemins.R
 .BASE <- file.path(.PFX, "Projets/stage_JeremyG/5-Resultats/5-Modeles")
 if (!exists("RUN_ECE")) RUN_ECE <- "Mortalite_2015-2024_r070_n1000_binaire"
 if (!exists("RUN_MOY")) RUN_MOY <- "ECE_Moyen_5bases_2015-2023_binaire"

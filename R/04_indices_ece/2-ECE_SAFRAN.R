@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail/2-ECE/1-Calcul_indices/2-ECE_SAFRAN.R")
+# source("R/04_indices_ece/2-ECE_SAFRAN.R")   # depuis la racine du depot
 # ==============================================================================
 # CALCUL INDICES ECE - BASE 2 : SAFRAN 8km
 # CRS : WGS84 natif | Resolution : ~8km | Periode : 1970-2024
@@ -8,12 +8,12 @@
 # Verifier que climdex.pcic.ncdf est installe (depuis source locale).
 # IMPORTANT : ne PAS reinstaller en parallele (race condition sur 00LOCK).
 # Si pas installe, faire UNE installation manuelle avant de lancer les 5 periodes :
-#   pkg_src <- "S:/Projets/stage_JeremyG/4-Travail/2-ECE/1-Climpact-master/climpact-master/server/pcic_packages/climdex.pcic.ncdf"
+#   pkg_src <- file.path(CLIMPACT_RACINE, "server", "pcic_packages", "climdex.pcic.ncdf")
 #   install.packages(pkg_src, repos=NULL, type="source")
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 {
-  .pkg_src <- file.path("S:", "Projets", "stage_JeremyG", "4-Travail", "2-ECE",
-                        "1-Climpact-master", "climpact-master", "server",
-                        "pcic_packages", "climdex.pcic.ncdf")
+  .pkg_src <- file.path(CLIMPACT_RACINE, "server", "pcic_packages", "climdex.pcic.ncdf")
   if (!requireNamespace("climdex.pcic.ncdf", quietly=TRUE)) {
     .lock_dir <- file.path(.libPaths()[1], "00LOCK-climdex.pcic.ncdf")
     if (dir.exists(.lock_dir)) unlink(.lock_dir, recursive=TRUE)
@@ -45,11 +45,11 @@ Sys.setenv("OMP_NUM_THREADS" = as.character(max(1L, floor((parallel::detectCores
 # PARAMETRES
 # ==============================================================================
 
-ROOT_LOC     <- if (dir.exists("D:/")) "D:/Stage_JeremyG" else "C:/Stage_JeremyG"
-ECE_ROOT     <- if (dir.exists("D:/Stage_JeremyG/ECE_data")) "D:/Stage_JeremyG/ECE_data" else "S:/Projets/stage_JeremyG/ECE_data"
+ROOT_LOC     <- LOCAL_ROOT
+ECE_ROOT     <- if (dir.exists(file.path(LOCAL_ROOT, "ECE_data"))) file.path(LOCAL_ROOT, "ECE_data") else file.path(PROJET, "ECE_data")
 MERGE_DIR    <- file.path(ROOT_LOC, "ECE_merge", "SAFRAN")    # fusion locale (I/O rapide)
-OUT_DIR      <- file.path("S:", "Projets", "stage_JeremyG", "5-Resultats", "3-ECE", "1-ECE_1979-2024", "2-SAFRAN_8km")
-CLIMPACT_DIR <- file.path("S:", "Projets", "stage_JeremyG", "4-Travail", "2-ECE", "1-Climpact-master", "climpact-master")
+OUT_DIR      <- file.path(PROJET, "5-Resultats", "3-ECE", "1-ECE_1979-2024", "2-SAFRAN_8km")
+CLIMPACT_DIR <- CLIMPACT_RACINE
 
 BASE <- list(
   code       = "SAFRAN",
@@ -142,8 +142,7 @@ VALID_RANGES  <- list(
 terraOptions(progress=1, memfrac=0.75, threads=N_CORES)  # Réduit à 0.75 pour safeguard RAM
 for (d in c(MERGE_DIR, OUT_DIR)) if (!dir.exists(d)) dir.create(d, recursive=TRUE)
 
-MASQUE_FRANCE_F <- file.path("S:", "Projets", "stage_JeremyG",
-                             "4-Travail", "1-Bases_de_donnees", "3-Limites_geo", "France_GADM_L0.gpkg")
+MASQUE_FRANCE_F <- MASQUE_FRANCE_GPKG
 MASQUE_FRANCE <- if (file.exists(MASQUE_FRANCE_F)) {
   tryCatch(vect(MASQUE_FRANCE_F), error=function(e) { cat("[WARN] Masque France illisible\n"); NULL })
 } else {
@@ -845,7 +844,7 @@ if (!is.null(f_spei)) {
 # --- Avancement partage (lu par 0-Watcher_ntfy.R) -----------------------------
 # Ecrit l etat courant d une etape longue dans un petit fichier (1 ligne, ecrase
 # a chaque maj). Jamais bloquant (try). Format : ts|base|etape|courant|total|msg
-STATUS_AVANCEMENT <- file.path(if (dir.exists("D:/")) "D:/Stage_JeremyG/ECE_merge" else tempdir(), "_avancement.txt")
+STATUS_AVANCEMENT <- file.path(if (dir.exists(LOCAL_ROOT)) file.path(LOCAL_ROOT, "ECE_merge") else tempdir(), "_avancement.txt")
 maj_avancement <- function(base, etape, courant = NA, total = NA, msg = "") {
   try({
     d <- dirname(STATUS_AVANCEMENT)

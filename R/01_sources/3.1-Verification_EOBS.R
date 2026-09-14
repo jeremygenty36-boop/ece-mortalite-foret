@@ -17,6 +17,8 @@
 #   6. Visualisation septembre 2014 : series + cartes + export rasters
 # ======================================================================
 
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 if (!requireNamespace("ncdf4",   quietly = TRUE)) install.packages("ncdf4")
 if (!requireNamespace("ggplot2", quietly = TRUE)) install.packages("ggplot2")
 if (!requireNamespace("terra",   quietly = TRUE)) install.packages("terra")
@@ -25,7 +27,7 @@ library(ggplot2)
 library(terra)
 
 # --- Parametres -------------------------------------------------------
-DIR_EOBS <- "S:/Projets/stage_JeremyG/3-Donnees/3-E_OBS/2-1950_2024_EOBS_FR"
+DIR_EOBS <- file.path(PROJET, "3-Donnees/3-E_OBS/2-1950_2024_EOBS_FR")
 F_RR_IN  <- file.path(DIR_EOBS, "rr_ens_mean_0.1deg_reg_v31.0e.nc")
 F_TX_IN  <- file.path(DIR_EOBS, "tx_ens_mean_0.1deg_reg_v31.0e.nc")
 F_TN_IN  <- file.path(DIR_EOBS, "tn_ens_mean_0.1deg_reg_v31.0e.nc")
@@ -49,7 +51,7 @@ LAT_PT <- 48.692   # Nancy
 LON_PT <- 6.184
 
 # Dossiers de sortie
-DIR_OUT     <- "S:/Projets/stage_JeremyG/5-Resultats/3-Downscaling/2-E_OBS"
+DIR_OUT     <- file.path(PROJET, "5-Resultats/3-Downscaling/2-E_OBS")
 DIR_OUT_RAS <- file.path(DIR_OUT, "rasters")
 dir.create(DIR_OUT,     recursive = TRUE, showWarnings = FALSE)
 dir.create(DIR_OUT_RAS, recursive = TRUE, showWarnings = FALSE)

@@ -14,6 +14,8 @@
 #   └── tasmax/  temperature maximale (K — soustraire 273.15 pour degC)
 # ======================================================================
 
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 if (!requireNamespace("curl",     quietly = TRUE)) install.packages("curl")
 if (!requireNamespace("terra",    quietly = TRUE)) install.packages("terra")
 library(curl)
@@ -21,8 +23,8 @@ library(terra)
 library(parallel)
 
 # --- Parametres -------------------------------------------------------
-PATH_TMP <- "S:/Projets/stage_JeremyG/3-Donnees/2-CHELSA/1-tmp/PC1/"
-PATH_OUT <- "S:/Projets/stage_JeremyG/3-Donnees/2-CHELSA/3-1960_2026_CHELSA_FR/"
+PATH_TMP <- file.path(PROJET, "3-Donnees/2-CHELSA/1-tmp/PC1/")
+PATH_OUT <- file.path(PROJET, "3-Donnees/2-CHELSA/3-1960_2026_CHELSA_FR/")
 URL_BASE <- "https://os.unil.cloud.switch.ch/chelsa02/chelsa/global/daily"
 
 DATE_DEBUT       <- as.Date("1960-01-01")

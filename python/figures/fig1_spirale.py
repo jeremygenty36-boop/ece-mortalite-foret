@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Figure 1 : spirale du deperissement (adaptee de Manion 1981). Rendu vectoriel net.
+import os
 import numpy as np, matplotlib.pyplot as plt
 from matplotlib.patches import Circle
 plt.rcParams['font.family'] = 'DejaVu Sans'
@@ -85,7 +86,7 @@ ax.text(0.8, y0, "variable prise en compte dans cette étude (en gras)",
         va='center', ha='left', fontsize=9, color='0.12')
 
 ax.set_xlim(-7.3, 7.7); ax.set_ylim(-6.6, 5.9)
-out = "/Users/jeremygenty/Desktop/Figure1_spirale.png"
+out = os.path.join(os.environ.get("ECE_FIGURES_OUT", os.path.expanduser("~/Desktop")), "Figure1_spirale.png")
 fig.savefig(out, dpi=300, bbox_inches='tight')
 fig.savefig(out.replace('.png', '.pdf'), bbox_inches='tight')
 print("OK ->", out)

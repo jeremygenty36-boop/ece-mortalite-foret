@@ -15,10 +15,12 @@
 # Sandbox (test bout-en-bout) : SANDBOX_ANNEES / SANDBOX_OUT / SANDBOX_CROP_EXT.
 # ==============================================================================
 
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({ library(terra); library(lubridate); library(ncdf4) })
 
-ROOT_LOC <- "D:/Stage_JeremyG"
-ROOT_SRV <- "S:/Projets/stage_JeremyG"
+ROOT_LOC <- LOCAL_ROOT
+ROOT_SRV <- PROJET
 
 SRC_ROOT    <- file.path(ROOT_SRV, "3-Donnees", "5-DIGITALIS", "4-DIGITALIS_daily_DS_SAFRAN_IDW")
 DST         <- file.path(ROOT_LOC, "ECE_data", "5-DIGI_SAF_1km")

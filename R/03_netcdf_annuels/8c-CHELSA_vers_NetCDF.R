@@ -1,3 +1,5 @@
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({
   library(terra)
   library(ncdf4)
@@ -6,8 +8,8 @@ suppressPackageStartupMessages({
   library(rnaturalearth)
 })
 
-ROOT_LOC <- "D:/Stage_JeremyG"
-ROOT_SRV <- "S:/Projets/stage_JeremyG"
+ROOT_LOC <- LOCAL_ROOT
+ROOT_SRV <- PROJET
 
 SRC_CHELSA <- list(
   pr    = file.path(ROOT_SRV, "3-Donnees", "2-CHELSA", "2-1960_2026_CHELSA_FR", "pr"),

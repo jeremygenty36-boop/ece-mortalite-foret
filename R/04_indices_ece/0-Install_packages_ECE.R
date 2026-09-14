@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail/2-ECE/0-Lanceurs/0-Install_packages_ECE.R")
+# source("R/04_indices_ece/0-Install_packages_ECE.R")   # depuis la racine du depot
 # ==============================================================================
 # INSTALLATION DES PACKAGES R NECESSAIRES AUX SCRIPTS ECE
 #
@@ -13,15 +13,17 @@
 #     4. climdex.pcic.ncdf depuis le tarball Climpact local
 #
 #   Usage : sur chaque machine, dans une session R fraiche :
-#     source("S:/Projets/stage_JeremyG/4-Travail/2-ECE/0-Lanceurs/0-Install_packages_ECE.R")
+#     source("R/04_indices_ece/0-Install_packages_ECE.R")
 # ==============================================================================
 
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 cat(sprintf("%s\n  INSTALL PACKAGES ECE - %s\n%s\n",
             strrep("=", 70), Sys.info()[["nodename"]], strrep("=", 70)))
 cat(sprintf("R version : %s.%s\n", R.version$major, R.version$minor))
 cat(sprintf("Library   : %s\n\n", .libPaths()[1]))
 
-PKG_DIR     <- "S:/Projets/stage_JeremyG/4-Travail/2-ECE/1-Climpact-master/climpact-master/server/pcic_packages"
+PKG_DIR     <- file.path(CLIMPACT_RACINE, "server", "pcic_packages")
 REPO_CRAN   <- "https://cran.rstudio.com"
 REPO_POSIT  <- "https://packagemanager.posit.co/cran/2025-04-01"  # avant archivage
 SAVE_REPOS  <- getOption("repos")

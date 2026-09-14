@@ -19,6 +19,8 @@
 #   7. Sauvegarde NC journalier
 # ======================================================================
 
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 if (!requireNamespace("ncdf4",   quietly = TRUE)) install.packages("ncdf4")
 if (!requireNamespace("ggplot2", quietly = TRUE)) install.packages("ggplot2")
 if (!requireNamespace("reshape2",quietly = TRUE)) install.packages("reshape2")
@@ -27,10 +29,10 @@ library(ggplot2)
 library(reshape2)
 
 # --- Parametres -------------------------------------------------------
-DIR_SAFRAN <- "S:/BD_SIG/climat/france/SAFRAN/0_donnees_brutes"
+DIR_SAFRAN <- file.path(.PFX, "BD_SIG", "climat/france/SAFRAN/0_donnees_brutes")
 F_PRCP_IN  <- file.path(DIR_SAFRAN, "ForcPRCP/ForcPRCP_france_SAFRAN_8Km_1hour_2014080100_2015073123_V1-3L_01.nc")
 F_TEMP_IN  <- file.path(DIR_SAFRAN, "ForcT/ForcT_france_SAFRAN_8Km_1hour_2014080100_2015073123_V1-3L_01.nc")
-DIR_OUT    <- "S:/Projets/stage_JeremyG/3-Donnees/1-SAFRAN/1-2014_SAFRAN/"
+DIR_OUT    <- file.path(PROJET, "3-Donnees/1-SAFRAN/1-2014_SAFRAN/")
 F_NC_OUT   <- file.path(DIR_OUT, "SAFRAN_8Km_daily_2014_2015.nc")
 
 # Periode d'interet pour visualisation / extraction point

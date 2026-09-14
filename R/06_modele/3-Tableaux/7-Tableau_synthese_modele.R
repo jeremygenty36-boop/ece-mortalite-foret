@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail/4-Modeles/1-Mortalite/3-Tableaux/7-Tableau_synthese_modele.R")
+# source("R/06_modele/3-Tableaux/7-Tableau_synthese_modele.R")   # depuis la racine du depot
 # ============================================================================
 # TABLEAU DE SYNTHESE DU MODELE DE MORTALITE (style Carletti et al. 2026).
 #   Une ligne par espece x base : AUC | Sensibilite | somme des IR ECE |
@@ -16,8 +16,10 @@
 #   - .tex publiables -> 5-Resultats/6-Figures et tableaux redaction/3-Resultats/Modele/
 # Lecture/ecriture legere : tourne sur Mac ou Windows. ASCII pur dans le code.
 # ============================================================================
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({ library(data.table) })
-if (!exists(".PFX")) .PFX <- if (dir.exists("S:/Projets")) "S:" else "/Volumes/_donnees"
+# .PFX : fourni par config/chemins.R
 if (!exists("RUN_TAG")) RUN_TAG <- "Mortalite_2009-2023_r075"
 .VARIANTE_DIR <- if (grepl("_dominants$", RUN_TAG)) "dominants" else if (grepl("_domines$", RUN_TAG)) "domines" else if (grepl("_pur080$", RUN_TAG)) "pur080" else "standard"  # niveau jeu de donnees (cf 6-Extraction_bases_variantes.R)
 # Masque effectifs faibles : metriques mises a NA ("--") si moins de SEUIL_MORTS

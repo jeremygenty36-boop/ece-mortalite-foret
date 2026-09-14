@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail/2-ECE/1-Calcul_indices/5-ECE_DIGI_CHELSA.R")
+# source("R/04_indices_ece/5-ECE_DIGI_CHELSA.R")   # depuis la racine du depot
 # ==============================================================================
 # CALCUL INDICES ECE - BASE 6 : DIGITALIS downscale CHELSA 1km
 # CRS natif : OGC:CRS84 (WGS84) -> corrige en EPSG:4326 avant traitement
@@ -11,12 +11,12 @@
 # Verifier que climdex.pcic.ncdf est installe (depuis source locale).
 # IMPORTANT : ne PAS reinstaller en parallele (race condition sur 00LOCK).
 # Si pas installe, faire UNE installation manuelle avant de lancer les 5 periodes :
-#   pkg_src <- "S:/Projets/stage_JeremyG/4-Travail/2-ECE/1-Climpact-master/climpact-master/server/pcic_packages/climdex.pcic.ncdf"
+#   pkg_src <- file.path(CLIMPACT_RACINE, "server", "pcic_packages", "climdex.pcic.ncdf")
 #   install.packages(pkg_src, repos=NULL, type="source")
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 {
-  .pkg_src <- file.path("S:", "Projets", "stage_JeremyG", "4-Travail", "2-ECE",
-                        "1-Climpact-master", "climpact-master", "server",
-                        "pcic_packages", "climdex.pcic.ncdf")
+  .pkg_src <- file.path(CLIMPACT_RACINE, "server", "pcic_packages", "climdex.pcic.ncdf")
   if (!requireNamespace("climdex.pcic.ncdf", quietly=TRUE)) {
     .lock_dir <- file.path(.libPaths()[1], "00LOCK-climdex.pcic.ncdf")
     if (dir.exists(.lock_dir)) unlink(.lock_dir, recursive=TRUE)
@@ -45,11 +45,11 @@ if (length(manquants) > 0) install.packages(manquants)
 # PARAMETRES
 # ==============================================================================
 
-ROOT_LOC     <- if (dir.exists("D:/")) "D:/Stage_JeremyG" else "C:/Stage_JeremyG"
-ECE_ROOT     <- "S:/Projets/stage_JeremyG/ECE_data"             # donnees sources sur reseau partage (S:)
+ROOT_LOC     <- LOCAL_ROOT
+ECE_ROOT     <- file.path(PROJET, "ECE_data")             # donnees sources sur reseau partage (S:)
 MERGE_DIR    <- file.path(ROOT_LOC, "ECE_merge", "DIGI_CHELSA")  # fusion locale (I/O rapide)
-OUT_DIR      <- file.path("S:", "Projets", "stage_JeremyG", "5-Resultats", "3-ECE", "1-ECE_1979-2024", "6-DIGI_CHEL_1km")
-CLIMPACT_DIR <- file.path("S:", "Projets", "stage_JeremyG", "4-Travail", "2-ECE", "1-Climpact-master", "climpact-master")
+OUT_DIR      <- file.path(PROJET, "5-Resultats", "3-ECE", "1-ECE_1979-2024", "6-DIGI_CHEL_1km")
+CLIMPACT_DIR <- CLIMPACT_RACINE
 
 BASE <- list(
   code       = "DIGI_CHEL",
@@ -57,8 +57,8 @@ BASE <- list(
     # 2026-06-05 : bascule auto sur D: (copie locale) quand elle est complete,
     #   sinon S: (NAS). On ne switche sur D:/ que si .n_loc >= .n_nas (la copie
     #   locale doit etre finie ; un dossier D:/ partiel reste ignore).
-    .loc <- "D:/Stage_JeremyG/ECE_data/6-DIGI_CHEL_1km"
-    .nas <- "S:/Projets/stage_JeremyG/3-Donnees/5-DIGITALIS/6-DIGI_CHEL_1km_nc"
+    .loc <- file.path(LOCAL_ROOT, "ECE_data/6-DIGI_CHEL_1km")
+    .nas <- file.path(PROJET, "3-Donnees/5-DIGITALIS/6-DIGI_CHEL_1km_nc")
     .n_loc <- if (dir.exists(.loc)) length(list.files(.loc, "\\.nc$")) else 0L
     .n_nas <- length(list.files(.nas, "\\.nc$"))
     if (.n_loc > 0L && .n_loc >= .n_nas) .loc else .nas
@@ -164,8 +164,7 @@ VALID_RANGES  <- list(
 terraOptions(progress=1, memfrac=0.9, threads=N_CORES)
 for (d in c(MERGE_DIR, OUT_DIR)) if (!dir.exists(d)) dir.create(d, recursive=TRUE)
 
-MASQUE_FRANCE_F <- file.path("S:", "Projets", "stage_JeremyG",
-                             "4-Travail", "1-Bases_de_donnees", "3-Limites_geo", "France_GADM_L0.gpkg")
+MASQUE_FRANCE_F <- MASQUE_FRANCE_GPKG
 MASQUE_FRANCE <- if (file.exists(MASQUE_FRANCE_F)) {
   tryCatch(vect(MASQUE_FRANCE_F), error=function(e) { cat("[WARN] Masque France illisible\n"); NULL })
 } else {
@@ -231,7 +230,7 @@ log_d_init <- function(merge_dir) {
 # --- Avancement partage (lu par 0-Watcher_ntfy.R) -----------------------------
 # Ecrit l etat courant d une etape longue dans un petit fichier (1 ligne, ecrase
 # a chaque maj). Jamais bloquant (try). Format : ts|base|etape|courant|total|msg
-STATUS_AVANCEMENT <- file.path(if (dir.exists("D:/")) "D:/Stage_JeremyG/ECE_merge" else tempdir(), "_avancement.txt")
+STATUS_AVANCEMENT <- file.path(if (dir.exists(LOCAL_ROOT)) file.path(LOCAL_ROOT, "ECE_merge") else tempdir(), "_avancement.txt")
 maj_avancement <- function(base, etape, courant = NA, total = NA, msg = "") {
   try({
     d <- dirname(STATUS_AVANCEMENT)
@@ -641,8 +640,8 @@ aligner_ts <- function(f_ref, f_target, varname) {
 # Turc : ETP = 0.013 * Tm/(Tm+15) * (Rs_cal + 50)  [mm/jour, si Tm > 0]
 # PATCH 2026-05-06 : fusion ETP via Python (netCDF4) - cf 3-ECE_CHELSA.R pour details.
 .fusion_etp_via_python <- function(tmp_files, f_out,
-                                   py_exe = "C:/OSGeo4W64/bin/python.exe",
-                                   py_script = "S:/Projets/stage_JeremyG/4-Travail/2-ECE/1-Calcul_indices/_fusion_etp_concat.py") {
+                                   py_exe = PYTHON_EXE,
+                                   py_script = file.path(DEPOT, "python", "ece_helpers", "_fusion_etp_concat.py")) {
   if (!file.exists(py_exe))    stop("Python introuvable : ", py_exe)
   if (!file.exists(py_script)) stop("Script Python introuvable : ", py_script)
   merge_dir <- dirname(f_out[1]); out_name <- basename(f_out[1])

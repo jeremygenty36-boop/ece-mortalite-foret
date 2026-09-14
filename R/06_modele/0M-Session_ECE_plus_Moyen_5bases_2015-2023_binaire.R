@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail_bis/4-Modeles/1-Mortalite/0M-Session_ECE_plus_Moyen_5bases_2015-2023_binaire.R")
+# source("R/06_modele/0M-Session_ECE_plus_Moyen_5bases_2015-2023_binaire.R")   # depuis la racine du depot
 # ==============================================================================
 # 5 BASES : ECE + MOYENNES SAISONNIERES PAR BASE -- VERSION BINAIRE (mort_bin)
 #   Clone de 0M-...2015-2023.R, en MODE_REPONSE="binaire".
@@ -8,10 +8,10 @@
 #   Prerequis : colonnes <MOY>_<base> deja dans IFN_placette.csv (script 3c).
 #   Reglages identiques au run ECE binaire de reference.
 # ==============================================================================
-.DIR <- if (dir.exists("S:/Projets"))
-  "S:/Projets/stage_JeremyG/4-Travail_bis/4-Modeles/1-Mortalite" else
-  "/Volumes/_donnees/Projets/stage_JeremyG/4-Travail_bis/4-Modeles/1-Mortalite"
-.PFX <- if (dir.exists("S:/Projets")) "S:" else "/Volumes/_donnees"
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
+.DIR <- file.path(DEPOT, "R", "06_modele")
+# .PFX : fourni par config/chemins.R
 
 MODE_REPONSE      <- "binaire"
 RUN_TAG           <- "ECE_Moyen_5bases_2015-2023_binaire"

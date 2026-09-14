@@ -1,4 +1,4 @@
-# source("S:/Projets/stage_JeremyG/4-Travail_bis/3-IFN/3b-Extraction_Classique_SAFDS.R")
+# source("R/05_extraction_ifn/3b-Extraction_Classique_SAFDS.R")   # depuis la racine du depot
 # ==============================================================================
 # EXTRACTION MOYENNES SAISONNIERES CLASSIQUES -> PLACETTES IFN
 #
@@ -22,14 +22,16 @@
 #        sur la selection BIC ni l'AUC du modele.
 # ==============================================================================
 
+# Chemins : config/chemins.R (lancer depuis la racine du depot, ou definir ECE_DEPOT)
+if (!exists("DEPOT")) source(file.path(Sys.getenv("ECE_DEPOT", getwd()), "config", "chemins.R"))
 suppressPackageStartupMessages({
   library(terra)
   library(data.table)
 })
 
 # --- CHEMINS ------------------------------------------------------------------
-.PFX    <- if (dir.exists("S:/Projets")) "S:" else "/Volumes/_donnees"
-.BD     <- if (dir.exists("S:/BD_SIG"))  "S:" else "/Volumes/_donnees"
+# .PFX : fourni par config/chemins.R
+.BD     <- .PFX   # racine contenant BD_SIG/ (config/chemins.R)
 DIR_BHC  <- file.path(.PFX, "Projets/stage_JeremyG/3-Donnees/5-DIGITALIS/2-1960_2025_DIGITALIS_v4/3-1960_2024_BHC")
 DIR_TMAX <- file.path(.BD,  "BD_SIG/climat/france/DIGITALIS_v3/tmax")
 DIR_TMIN <- file.path(.BD,  "BD_SIG/climat/france/DIGITALIS_v3/tmin")
