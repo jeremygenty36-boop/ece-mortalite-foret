@@ -33,6 +33,12 @@ Recalculés sur `IFN_placette.csv` et identiques à la somme de `n_plac` du run 
 
 ## Modèle
 
+Démarche inspirée de Carletti et al. (2026) : GLM à lien cloglog, variables de peuplement toujours
+présentes, sélection ascendante des ECE par BIC et test du χ², importance relative par perte de
+déviance, courbes de réponse avec les autres variables à leur moyenne. Différences : réponse par
+placette en mode binaire (l'article modélise le statut de chaque arbre), 1 000 partitions au lieu de
+100, seuil de corrélation 0,70 au lieu de 0,75, fenêtre de 10 ans seulement.
+
 Un modèle par **essence × base** (8 × 5 dans le rapport). Réponse selon `MODE_REPONSE` :
 
 | Mode | Réponse | Mesure | Utilisé dans le rapport |
@@ -87,3 +93,7 @@ Un modèle par **essence × base** (8 × 5 dans le rapport). Réponse selon `MOD
 | `Comparaison_Classique_DIGI_2015-2023_binaire` (0K) | idem | climat moyen DIGITALIS (usage dans le rapport à confirmer) |
 
 Les valeurs du rapport ne sont pas celles d'une relance v1.1 (SPEI6, échantillon et graine changent).
+
+## Référence
+
+Carletti H., Caloin M., Joetzjer E., Marçais B., Gégout J.-C., Piedallu C. (2026). The long-term decrease in extreme cold events is a key actor in the increased mortality of Norway spruce and silver fir. *Agricultural and Forest Meteorology*, 111151. https://doi.org/10.1016/j.agrformet.2026.111151

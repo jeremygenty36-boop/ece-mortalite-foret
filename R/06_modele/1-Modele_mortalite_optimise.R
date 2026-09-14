@@ -58,9 +58,9 @@ if (!exists("N_ITER")) N_ITER <- 1000
 PROP_CAL   <- 0.70
 PVAL_SEUIL <- 0.01
 if (!exists("COR_SEUIL")) COR_SEUIL <- 0.70   # -> r070 dans le nom du run
-# Forme de la reponse quadratique (facon Helene : echantillonnage de la courbe ajustee sur
-# une grille de percentiles, sans calcul de sommet -> on ne regarde la courbe que la ou il y a
-# des donnees). Codes : "+"/"-" monotone, "U" creux interieur, "n" bosse interieure (cf fn_forme).
+# Forme de la reponse quadratique (courbe de reponse avec les autres variables a leur moyenne,
+# comme Carletti et al. 2026 ; echantillonnee sur une grille de percentiles, sans calcul de
+# sommet -> on ne regarde la courbe que la ou il y a des donnees). Codes : "+"/"-" monotone, "U" creux interieur, "n" bosse interieure (cf fn_forme).
 if (!exists("PROBS_FORME")) PROBS_FORME <- seq(0.1, 0.9, by = 0.1)
 if (!exists("TOL_FORME"))   TOL_FORME   <- 0.05  # proeminence min. de l'extremum interieur (frac. de l'amplitude)
 if (!exists("SEUIL_FORME")) SEUIL_FORME <- 0.5   # frac. min. d'iterations pour retenir U/n (sinon repli sur le signe)
@@ -122,7 +122,9 @@ if (!exists("INDICES_AUTORISES")) INDICES_AUTORISES <- INDICES
 if (!exists("VAR_FIXES")) VAR_FIXES <- c("pH", "G_ha_tot", "Gini", "c13_moy_sp", "prop_G")
 
 # Mode de reponse : "binomial" = cbind(morts, vivants) par arbre (historique, defaut) ;
-#   "binaire" = placette morte des qu'au moins un arbre de l'essence est mort (facon Helene/Carletti).
+#   "binaire" = placette morte des qu'au moins un arbre de l'essence est mort (occurrence).
+#   NB : Carletti et al. 2026 modelisent le statut de chaque arbre (0 vivant / 1 mort), ce qui
+#   correspond au mode "binomial" (reponse par arbre), et non au mode "binaire" par placette.
 if (!exists("MODE_REPONSE")) MODE_REPONSE <- "binomial"
 stopifnot(MODE_REPONSE %in% c("binomial", "binaire"))
 .lhs_reponse <- if (MODE_REPONSE == "binaire") "mort_bin" else "cbind(n_mort_sp, n_tiges - n_mort_sp)"
@@ -286,8 +288,8 @@ fn_dir <- function(glm_full, base_cal, predicteurs) {
   })
 }
 
-# Forme de la courbe de reponse, facon Helene : on predit la mortalite sur la grille de
-# percentiles (autres variables a leur moyenne) et on classe la forme la ou il y a des donnees.
+# Forme de la courbe de reponse (autres variables a leur moyenne, comme Carletti et al. 2026) :
+# on predit la mortalite sur la grille de percentiles et on classe la forme la ou il y a des donnees.
 #   "+"/"-" monotone ; "U" creux interieur ; "n" bosse interieure (extremum > TOL_FORME de l'amplitude).
 fn_forme <- function(glm_full, base_cal, predicteurs) {
   mu <- as.data.frame(as.list(sapply(predicteurs,

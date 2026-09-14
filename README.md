@@ -84,10 +84,7 @@ l'œuvre de Christian Piedallu. Voir [`CITATION.cff`](CITATION.cff).
 | Fichiers Climpact modifiés : `third_party/climpact/` | GPL-3 ([`third_party/climpact/LICENSE`](third_party/climpact/LICENSE)) |
 
 Les données (DIGITALIS, SAFRAN, E-OBS, CHELSA, IFN) ne sont pas couvertes et relèvent de leurs
-licences propres. Avant diffusion publique, faire valider par les encadrants le titulaire des droits
-indiqué dans `LICENSE` : les droits sur un logiciel créé pendant un stage dans une structure de
-recherche peuvent revenir à l'établissement d'accueil (article L113-9-1 du code de la propriété
-intellectuelle).
+licences propres. Titulaire des droits : UMR Silva ; diffusion validée par C. Piedallu et V. Gautier.
 
 ## English summary
 

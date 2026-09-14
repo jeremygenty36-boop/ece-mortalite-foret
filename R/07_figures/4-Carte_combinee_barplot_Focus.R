@@ -27,8 +27,8 @@ PAL8  <- c("#1b9e77","#d95f02","#7570b3","#e7298a","#66a61e","#e6ab02","#a6761d"
 
 # --- Lignes (placette x essence PRESENTE), periode d'etude, Corse exclue -----
 # JEU DE MODELISATION : essence focus PRESENTE (presence==1, PAS dominante),
-# campagnes 2015-2023 (restriction VOLONTAIRE a la periode de hausse de mortalite,
-# justif. facon Helene, cf figure annexe), hors Corse. Une placette portant
+# campagnes 2015-2023 (restriction VOLONTAIRE a la periode de hausse de mortalite, cf figure
+# annexe ; Carletti et al. 2026 retiennent de meme 2018-2023, periode de mortalite accrue), hors Corse. Une placette portant
 # 2 essences focus apparait pour chacune (redondance assumee, coherent modele).
 d    <- fread(F_IFN, sep=";")
 dd   <- d[species_name %in% FOCUS & presence == 1 &

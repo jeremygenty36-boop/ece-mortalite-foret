@@ -35,6 +35,9 @@ Période calculée : 1979-2024. **Période de référence** (percentiles, Q10, S
 - **Seuils HWN / CWN** : percentile 90 (Tmax) ou 10 (Tmin) par pixel et par jour de l'année, calculé
   sur 1979-1989 avec une fenêtre glissante de ± 7 jours. Un épisode est compté une fois, le jour où
   la série de jours consécutifs atteint 3 ; une rupture de dates remet le compteur à zéro.
+  Indices repris de Carletti et al. (2026), qui utilisent la période de référence 1961-1990 et dont le
+  tableau 1 définit les vagues comme « plus de 3 jours consécutifs » ; le code compte les épisodes
+  d'**au moins 3 jours**.
 - **WG10P** : Q10 de (P − ETP) par pixel et par mois calendaire sur 1979-1989 ; pourcentage calculé
   sur les jours valides ; NA (et non 0) si aucun jour valide.
 - **ETP de Turc**, identique pour les 6 bases (l. 354-358) :
@@ -69,3 +72,7 @@ mi-saison de l'indice, la fenêtre est décalée d'un an vers le passé (toujour
 L'extrême est calculé **par placette** sur sa fenêtre ; une fenêtre entièrement NA donne NA
 (l. 176), une fenêtre partiellement NA est agrégée sur les années valides.
 Colonnes produites : `<INDICE>_<BASE>` avec BASE ∈ {EOB10, SAF8, CHE1, EOBDS, SAFDS, CHEDS}.
+
+## Référence
+
+Carletti H., Caloin M., Joetzjer E., Marçais B., Gégout J.-C., Piedallu C. (2026). The long-term decrease in extreme cold events is a key actor in the increased mortality of Norway spruce and silver fir. *Agricultural and Forest Meteorology*, 111151. https://doi.org/10.1016/j.agrformet.2026.111151
