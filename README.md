@@ -77,6 +77,25 @@ l'œuvre de Christian Piedallu. Voir [`CITATION.cff`](CITATION.cff).
 
 ## Licence
 
-Voir [`LICENSE`](LICENSE). Le choix de licence et la diffusion publique restent à
-valider avec les encadrants avant toute mise en ligne. Les fichiers de
-`third_party/climpact` sont sous GPL-3 (licence de Climpact).
+| Contenu | Licence |
+|---|---|
+| Code : `R/`, `python/`, `config/`, `tests/` | MIT ([`LICENSE`](LICENSE)) |
+| Documentation : README, `docs/`, ERRATA, CHANGELOG | CC-BY 4.0 ([`LICENSE-docs`](LICENSE-docs)) |
+| Fichiers Climpact modifiés : `third_party/climpact/` | GPL-3 ([`third_party/climpact/LICENSE`](third_party/climpact/LICENSE)) |
+
+Les données (DIGITALIS, SAFRAN, E-OBS, CHELSA, IFN) ne sont pas couvertes et relèvent de leurs
+licences propres. Avant diffusion publique, faire valider par les encadrants le titulaire des droits
+indiqué dans `LICENSE` : les droits sur un logiciel créé pendant un stage dans une structure de
+recherche peuvent revenir à l'établissement d'accueil (article L113-9-1 du code de la propriété
+intellectuelle).
+
+## English summary
+
+Complete processing chain of an MSc internship (UMR Silva, France, 2025-2026) testing whether
+climate extreme events computed at 1 km explain tree mortality better than mean seasonal climate.
+Three daily climate datasets (SAFRAN, E-OBS, CHELSA) are downscaled to 1 km with a monthly delta
+method calibrated on DIGITALIS; six extreme indices (TXx, TNn, SPEI-6, WG10P, HWN, CWN) are computed,
+extracted at French National Forest Inventory plots over 10-year windows, and used in binary cloglog
+GLMs per species and dataset (1,000 random 70/30 splits, forward BIC selection). Version 1.1 fixes the
+issues listed in `ERRATA.md` and has not been re-run on the full data; the internship report results
+come from tag `v1.0-rapport`. Code and documentation are in French.

@@ -1,4 +1,4 @@
-"""Chemins du pipeline (equivalent Python de r/config_chemins.R) - a ADAPTER.
+"""Chemins du pipeline (equivalent Python de R/02_downscaling/config_chemins.R) - a ADAPTER.
 
 Source de verite des chemins pour l'I/O des VRAIES donnees. La demo synthetique
 et les tests n'en ont pas besoin. Adapter via la variable d'environnement

@@ -3,7 +3,7 @@
 # Parallelisation par annee sur CALCULUS (36 coeurs physiques, 384 Go RAM)
 #
 # PARTAGE CALCULUS : script configure pour cohabiter avec les autres
-# utilisateurs (nemer, piedallu, callebaut, bresson, serradiaz...).
+# utilisateurs du serveur de calcul.
 # Regler N_WORKERS selon la charge au moment du lancement :
 #   Serveur libre (nuit/week-end) : 16 workers
 #   Charge moderee (quelques users) :  8 workers  <- valeur par defaut
@@ -33,7 +33,7 @@ library(data.table)
 library(lubridate)
 
 # Chemins du pipeline : editer config_chemins.R (racine des donnees via DIGI_ROOT).
-# Lancer depuis le dossier r/ du depot (ou avoir config_chemins.R dans le working dir).
+# Lancer depuis R/02_downscaling/ (ou avoir config_chemins.R dans le working dir).
 if (!exists("DIGI_PREC")) source("config_chemins.R")
 
 # ======================================================================

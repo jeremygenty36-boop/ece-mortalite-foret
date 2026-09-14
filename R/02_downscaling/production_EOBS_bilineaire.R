@@ -1,6 +1,6 @@
 # ==================================================================================================================================================================================================================
 # PRODUCTION DOWNSCALING BILINEAIRE (methode Delta) - E-OBS 0.1 deg -> 1km - 1961-2024
-# Emplacement (depot) : r/production_EOBS_bilineaire.R
+# Emplacement (depot) : R/02_downscaling/production_EOBS_bilineaire.R
 #
 # Methode : Delta (facteur de correction mensuel) + interpolation bilineaire
 #   1. Stat mensuelle E-OBS (sum pour prec, mean pour temp)
@@ -28,7 +28,7 @@ library(lubridate)
 library(parallel)
 
 # Chemins du pipeline : editer config_chemins.R (racine des donnees via DIGI_ROOT).
-# Lancer depuis le dossier r/ du depot (ou avoir config_chemins.R dans le working dir).
+# Lancer depuis R/02_downscaling/ (ou avoir config_chemins.R dans le working dir).
 if (!exists("DIGI_PREC")) source("config_chemins.R")
 
 # ==================================================================================================================================================================================================================

@@ -12,8 +12,8 @@ type: software
 authors:
   - family-names: Genty
     given-names: Jeremy
-    affiliation: "Stage M2"
-license: CC-BY-4.0
+    affiliation: "UMR Silva, AgroParisTech (stage de Master 2)"
+license: MIT
 version: "1.1"
 date-released: "2026-09-14"
 keywords:

@@ -1,7 +1,7 @@
 """Downscaling 1 km par methode Delta - implementation de reference (Python).
 
 Portage lisible des scripts R de production (SAFRAN IDW, E-OBS / CHELSA bilineaire).
-Cf. ../docs/methode.md pour la methode et README.md pour l'usage.
+Cf. docs/methode_downscaling.md (racine du depot) pour la methode et README.md pour l'usage.
 """
 from . import interpolation, methode_delta, pipeline  # noqa: F401
 from .methode_delta import (  # noqa: F401

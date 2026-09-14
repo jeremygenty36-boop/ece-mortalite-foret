@@ -42,7 +42,7 @@ library(terra)
 CRS_L93 <- "+proj=lcc +lat_0=46.5 +lon_0=3 +lat_1=49 +lat_2=44 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
 
 # Chemins du pipeline : editer config_chemins.R (racine des donnees via DIGI_ROOT).
-# Lancer depuis le dossier r/ du depot (ou avoir config_chemins.R dans le working dir).
+# Lancer depuis R/02_downscaling/ (ou avoir config_chemins.R dans le working dir).
 if (!exists("DIGI_PREC")) source("config_chemins.R")
 
 # --- Parametres -------------------------------------------------------

@@ -1,4 +1,4 @@
-# Lancer depuis le dossier r/ du depot :  source("lanceur_downscaling.R")
+# Lancer depuis R/02_downscaling/ :  setwd("R/02_downscaling"); source("lanceur_downscaling.R")
 # ==============================================================================
 # LANCEUR DOWNSCALING - ENCHAINEMENT AUTOMATIQUE DE LA PRODUCTION DES 3 BASES
 # Lance les 3 scripts de production les uns apres les autres. En cas d'erreur
@@ -11,7 +11,7 @@
 # d'entree/sortie sont centralises dans config_chemins.R (a adapter).
 # ==============================================================================
 
-# Dossier des scripts = repertoire courant (lancer depuis r/).
+# Dossier des scripts = repertoire courant (lancer depuis R/02_downscaling/).
 ROOT_DS  <- getwd()
 
 # ------------------------------------------------------------------------------

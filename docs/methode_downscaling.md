@@ -104,4 +104,4 @@ produite ici (cf. [sources_donnees.md](sources_donnees.md) et le README).
 | Cœur (ratio/delta, clamp) | intégré aux scripts | `methode_delta.py` |
 
 La version Python vérifie la conservation (somme/moyenne mensuelle = DIGITALIS) par
-des tests unitaires (`python/tests/`).
+des tests unitaires (`python/downscaling/tests/`).

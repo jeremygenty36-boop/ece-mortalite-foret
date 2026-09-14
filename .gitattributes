@@ -1,0 +1,2 @@
+# Conserver les octets des scripts tels qu executes (encodages Latin-1 et fins de ligne Windows)
+* -text

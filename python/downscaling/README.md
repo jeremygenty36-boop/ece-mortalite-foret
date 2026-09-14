@@ -1,7 +1,7 @@
 # Version Python : downscaling 1 km par méthode Delta
 
 Implémentation de **référence** (lisible, testée, exécutable) de la méthode Delta
-utilisée par les scripts R de production du dossier `3-Downscaling`. Objectif :
+utilisée par les scripts R de production de `R/02_downscaling/`. Objectif :
 **comprendre et reproduire** la méthode, pas produire les 65 ans × 3 bases en
 parallèle (ça reste le rôle des scripts R sur CALCULUS).
 
@@ -21,7 +21,7 @@ est appliqué à chaque jour interpolé à 1 km :
 | Température (tmin/tmax) | idem | `delta = DIGI − src_m` | `jour + delta` |
 
 Conservation : la **somme** mensuelle (précip) ou la **moyenne** mensuelle (temp)
-du résultat égale DIGITALIS. Cf. `../docs/methode.md` pour le contexte complet.
+du résultat égale DIGITALIS. Cf. `../../docs/methode_downscaling.md` pour le contexte complet.
 
 ## Structure
 
@@ -32,7 +32,7 @@ python/
 │   ├── interpolation.py   # IDW (NumPy, scipy optionnel) + bilinéaire (NumPy pur)
 │   ├── io_raster.py        # I/O des VRAIES données (rioxarray/rasterio/geopandas, optionnels)
 │   └── pipeline.py         # orchestration : points→IDW ou grille→bilinéaire, puis méthode Delta
-├── config_chemins.py       # equivalent de r/config_chemins.R (racine DIGI_ROOT)
+├── config_chemins.py       # equivalent de R/02_downscaling/config_chemins.R (racine DIGI_ROOT)
 ├── demo_synthetique.py     # démo bout-en-bout sur données jouet (aucune donnée réelle)
 ├── tests/test_methode_delta.py
 └── requirements.txt
@@ -78,8 +78,8 @@ La reprojection WGS84→L93 (CHELSA/E-OBS) et le masque France passent par
 
 | Script R | Équivalent Python |
 |----------|-------------------|
-| `r/production_SAFRAN_IDW.R` | `pipeline.downscale_mois_points` + `interpolation.idw` |
-| `r/production_EOBS_bilineaire.R` | `pipeline.downscale_mois_grille` + `interpolation.bilineaire` |
-| `r/production_CHELSA_bilineaire.R` | idem (bilinéaire + reprojection L93) |
-| `r/config_chemins.R` | `config_chemins.py` |
+| `R/02_downscaling/production_SAFRAN_IDW.R` | `pipeline.downscale_mois_points` + `interpolation.idw` |
+| `R/02_downscaling/production_EOBS_bilineaire.R` | `pipeline.downscale_mois_grille` + `interpolation.bilineaire` |
+| `R/02_downscaling/production_CHELSA_bilineaire.R` | idem (bilinéaire + reprojection L93) |
+| `R/02_downscaling/config_chemins.R` | `config_chemins.py` |
 | cœur méthode (ratio/delta, clamp) | `methode_delta.py` |

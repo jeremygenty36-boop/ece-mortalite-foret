@@ -23,7 +23,7 @@ suppressPackageStartupMessages({
 RUN_TAG   <- "2015-2023_r070_n1000_binaire"
 OVERWRITE <- TRUE   # flag explicite d'ecrasement (charte : jamais ecraser sans flag)
 
-BASE_DIR <- PROJET   # execute a l origine sur la copie locale ~/Documents/stage_JeremyG_backup/stage_JeremyG
+BASE_DIR <- PROJET   # execute a l origine sur une copie locale du dossier projet
 DATA_DIR <- file.path(BASE_DIR, "5-Resultats", "5-Modeles", "standard",
                       "Mortalite_2015-2023_r070_n1000_binaire", "2-Syntheses")
 OUT_DIR  <- file.path(PROJET, "5-Resultats", "5-Modeles", "Figures", "figures_H1_binaire")
