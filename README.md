@@ -87,6 +87,14 @@ garde-fou du paramétrage** :
 - relecture complète du code a posteriori, qui a produit l'[`ERRATA.md`](ERRATA.md), les corrections
   de la v1.1 et la documentation du dépôt.
 
+Ce travail s'est fait dans un cadre de consignes explicites, fixées par l'auteur et exigées pour chaque
+production : **rigueur scientifique** (ne jamais écrêter ni filtrer les valeurs aberrantes, une valeur
+manquante reste manquante et n'est jamais remplacée par 0, vérifier toute affirmation dans le code ou
+l'article source avant de l'écrire), **reproductibilité** (paramètres tracés, versions et écarts
+documentés, code publié tel qu'exécuté) et **fiabilité** (validation par le contenu des fichiers,
+aucune suppression définitive d'un calcul, échec explicite plutôt que résultat silencieusement faux,
+aucun script déclaré fonctionnel sans vérification sur la machine de calcul).
+
 Cette assistance a permis de construire des scripts de cette ampleur, adaptés précisément aux choix
 de l'auteur, qui a défini chaque étape, arbitré chaque écart relevé et validé les résultats.
 
