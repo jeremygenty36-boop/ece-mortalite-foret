@@ -59,6 +59,15 @@ MOIS_FIN <- list(TXx=11L, TNn=12L, SPEI6=8L, WG10P=8L, HWN=9L, CWN=12L)
 
 suppressPackageStartupMessages(library(terra))
 
+# v1.1 : lecture de l'operateur d'agregation annuelle (attribut global NetCDF)
+.att_agregation <- function(f) {
+  tryCatch({
+    nc <- ncdf4::nc_open(f); on.exit(ncdf4::nc_close(nc))
+    a <- ncdf4::ncatt_get(nc, 0, "agregation_annuelle")
+    if (isTRUE(a$hasatt)) as.character(a$value) else NA_character_
+  }, error = function(e) NA_character_)
+}
+
 DIR_BASE <- file.path(ROOT, OUT_DIRS[[BASE]])
 if (!dir.exists(DIR_BASE)) stop("Dossier base introuvable : ", DIR_BASE)
 if (!file.exists(MASQUE_F)) stop("Masque France introuvable : ", MASQUE_F)
@@ -90,6 +99,17 @@ for (idx in idx_a_traiter) {
   # anterieur, on repart de l'original), sinon le main (= premier passage).
   # Rend le script idempotent et permet de basculer clampe / non clampe.
   f_orig <- file.path(DIR_BK, basename(f))
+  # v1.1 : si l'indice a ete re-agrege avec un autre operateur (attribut
+  # "agregation_annuelle", ex. SPEI6 moyenne -> min), la sauvegarde est perimee :
+  # elle part a la corbeille au lieu d'etre restauree par-dessus le nouveau calcul.
+  if (file.exists(f_orig) && !is.na(.att_agregation(f)) &&
+      !identical(.att_agregation(f_orig), .att_agregation(f))) {
+    cb <- file.path(DIR_BASE, "_corbeille"); dir.create(cb, showWarnings = FALSE)
+    dest <- file.path(cb, sprintf("%s.%s.bak", basename(f_orig), format(Sys.time(), "%Y%m%d_%H%M%S")))
+    if (file.rename(f_orig, dest))
+      cat(sprintf("  %-6s : sauvegarde perimee (agregation '%s' -> '%s') mise a la corbeille\n",
+                  idx, .att_agregation(dest), .att_agregation(f)))
+  }
   f_read <- if (file.exists(f_orig)) f_orig else f
   r <- tryCatch(rast(f_read), error=function(e) NULL)
   if (is.null(r)) { cat(sprintf("  %-6s : ILLISIBLE (skip)\n", idx)); next }
@@ -128,8 +148,12 @@ for (idx in idx_a_traiter) {
   # --- Backup original puis ecrasement ---
   bk <- file.path(DIR_BK, basename(f))
   if (!file.exists(bk)) file.copy(f, bk, copy.date=TRUE)
+  .agr <- .att_agregation(f_read)
   tryCatch({
     writeCDF(r, f, varname=vn, overwrite=TRUE, compression=1L)
+    if (!is.na(.agr)) {   # v1.1 : conserver l'operateur d'agregation dans la sortie
+      nc <- ncdf4::nc_open(f, write = TRUE); ncdf4::ncatt_put(nc, 0, "agregation_annuelle", .agr); ncdf4::nc_close(nc)
+    }
     n_ok <- n_ok + 1L
     msg_clamp <- if (APPLIQUER_CLAMP)
                    sprintf("clamp [%g, %g] : %d val. hors plage -> NA", rg[1], rg[2], n_hors)

@@ -684,6 +684,23 @@ lire_climpact_ncdf4 <- function(f_nc, template_r, spei_scale=2) {
   r_out
 }
 
+# v1.1 : operateur d'agregation annuelle ecrit dans le NetCDF (attribut global
+# "agregation_annuelle"), pour detecter une sortie produite avec un autre operateur.
+.att_agregation <- function(f) {
+  tryCatch({
+    nc <- ncdf4::nc_open(f); on.exit(ncdf4::nc_close(nc))
+    a <- ncdf4::ncatt_get(nc, 0, "agregation_annuelle")
+    if (isTRUE(a$hasatt)) as.character(a$value) else NA_character_
+  }, error = function(e) NA_character_)
+}
+.ecrire_att_agregation <- function(f, op) {
+  tryCatch({
+    nc <- ncdf4::nc_open(f, write = TRUE); on.exit(ncdf4::nc_close(nc))
+    ncdf4::ncatt_put(nc, 0, "agregation_annuelle", op)
+  }, error = function(e) err(sprintf("attribut agregation_annuelle non ecrit : %s", conditionMessage(e))))
+  invisible(f)
+}
+
 agreger <- function(f_mensuel, nom_indice, saison_mois, type_agg, out_dir, base_code, template_r=NULL, nom_saison=NULL) {
   if (!file.exists(f_mensuel)) { err(sprintf("Absent : %s", basename(f_mensuel))); return(NULL) }
   nom_sais <- if (!is.null(nom_saison)) nom_saison else
@@ -692,6 +709,11 @@ agreger <- function(f_mensuel, nom_indice, saison_mois, type_agg, out_dir, base_
                 paste(saison_mois,collapse=""))
   label <- sprintf("ECE_%s_%s_%s", base_code, nom_indice, nom_sais)
   f_out <- file.path(out_dir, paste0(label,".nc"))
+  # v1.1 : un SPEI6 agrege avec un autre operateur (v1.0 : moyenne) est mis a la corbeille puis recalcule
+  if (nom_indice == "SPEI6" && file.exists(f_out) && !identical(.att_agregation(f_out), type_agg)) {
+    inf(sprintf("SPEI6 agrege avec '%s' -> recalcul avec '%s'", .att_agregation(f_out), type_agg))
+    supprimer(f_out)
+  }
   if (index_valide(f_out)) { inf(sprintf("SKIP agregation : %s", basename(f_out))); return(f_out) }
   if (file.exists(f_out)) supprimer(f_out)   # present mais invalide (NA/tronque) -> on regenere
   spei_sc <- if (grepl("spei", tolower(nom_indice))) 2L else 1L
@@ -732,7 +754,7 @@ agreger <- function(f_mensuel, nom_indice, saison_mois, type_agg, out_dir, base_
   # ecrasait la date de chaque couche (sortie de app() sans time) -> axe temps
   # "Inf" en sortie. Corrige a la source dans les 4 scripts ECE.
   time(r_out) <- as.Date(sprintf("%d-%02d-15", annees, max(saison_mois)))
-  tryCatch({ writeCDF(r_out, f_out, varname=label, compression=COMPRESSION, overwrite=TRUE)
+  tryCatch({ writeCDF(r_out, f_out, varname=label, compression=COMPRESSION, overwrite=TRUE); .ecrire_att_agregation(f_out, type_agg)
              ok(sprintf("Agregation OK : %s (%d ans)", basename(f_out), length(annees))) },
            error=function(e) err(conditionMessage(e)))
   rm(r_men,r_out); gc(); f_out
@@ -1109,7 +1131,7 @@ if (!all(indices_presents)) {
 cat("\n--- ETAPE C : Agregation multi-saisonniere (4 indices) ---\n")
 # TXx   : MAR-NOV (max sur 9 mois, hors hiver)
 # TNn   : SEP-MAY (min ; hiver COMPLET a cheval : SEP(Y-1)..MAI(Y), comme CWN)
-# SPEI6 : MAR-AUG (mean sur 6 mois, printemps + ete)
+# SPEI6 : MAR-AUG (min des SPEI-6 mensuels, printemps + ete ; v1.0 : moyenne)
 # WG10P : MAR-AUG (% jours WG < Q10 sur 6 mois, printemps + ete)
 tmpl_r <- tryCatch(rast(f_tmax)[[1]], error=function(e) NULL)
 
@@ -1128,7 +1150,7 @@ if (!is.null(f_tnn)) {
 f_spei <- trouver(out_climpact,"spei6")
 if (is.null(f_spei)) f_spei <- trouver(out_climpact,"spei")
 if (!is.null(f_spei)) {
-  f_out <- agreger(f_spei, "SPEI6", 3:8, "mean", OUT_DIR, BASE$code, tmpl_r, nom_saison="MAR-AUG")
+  f_out <- agreger(f_spei, "SPEI6", 3:8, "min", OUT_DIR, BASE$code, tmpl_r, nom_saison="MAR-AUG")
   if (!ONLY_WG10P_HWN_CWN && !is.null(f_out)) valider(f_out,"spei6",BASE$code)
 }
 
