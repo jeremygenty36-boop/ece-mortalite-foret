@@ -75,6 +75,9 @@ Développé par **Jérémy Genty** (stage M2), encadré par **Christian Piedallu
 **Violette Gautier**. La climatologie DIGITALIS, référence de la correction, est
 l'œuvre de Christian Piedallu. Voir [`CITATION.cff`](CITATION.cff).
 
+La relecture du code, les corrections de la v1.1 et la documentation ont été réalisées avec
+l'assistance de Claude (Anthropic), puis vérifiées et validées par l'auteur.
+
 ## Licence
 
 | Contenu | Licence |
