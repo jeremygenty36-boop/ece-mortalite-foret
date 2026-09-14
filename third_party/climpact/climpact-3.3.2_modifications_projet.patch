@@ -1,0 +1,630 @@
+--- a/app.R
++++ b/app.R
+@@ -46,7 +46,6 @@
+ # Note, other libraries are sourced at different points in the program depending on what functions the user interacts with.
+ library(zoo)
+ library(zyp)
+-library(tcltk2)
+ library(parallel)
+ library(shinythemes)
+ library(shinyjs)
+@@ -66,9 +65,12 @@
+ if (.Platform$OS.type == "windows") {
+   fchoose <<- get("choose.files", mode = "function")
+   dchoose <<- get("choose.dir", mode = "function")
+-} else if (.Platform$OS.type == "unix") {
+-  fchoose <<- get("tk_choose.files", mode = "function")
+-  dchoose <<- get("tk_choose.dir", mode = "function")
++} else {
++  fchoose <<- function(...) file.choose()
++  dchoose <<- function(...) {
++    f <- file.choose()
++    if (file.info(f)$isdir) f else dirname(f)
++  }
+ }
+ 
+ isLocal <<- FALSE
+--- a/climpact.Rproj
++++ b/climpact.Rproj
+@@ -1,16 +1,16 @@
+-Version: 1.0
+-
+-RestoreWorkspace: Default
+-SaveWorkspace: Default
+-AlwaysSaveHistory: Default
+-
+-EnableCodeIndexing: Yes
+-UseSpacesForTab: Yes
+-NumSpacesForTab: 2
+-Encoding: UTF-8
+-
+-RnwWeave: Sweave
+-LaTeX: pdfLaTeX
+-
+-AutoAppendNewline: Yes
+-StripTrailingWhitespace: Yes
++Version: 1.0
++
++RestoreWorkspace: Default
++SaveWorkspace: Default
++AlwaysSaveHistory: Default
++
++EnableCodeIndexing: Yes
++UseSpacesForTab: Yes
++NumSpacesForTab: 2
++Encoding: UTF-8
++
++RnwWeave: Sweave
++LaTeX: pdfLaTeX
++
++AutoAppendNewline: Yes
++StripTrailingWhitespace: Yes
+--- a/models/ncdfInputParams.R
++++ b/models/ncdfInputParams.R
+@@ -52,7 +52,7 @@
+   if (indicesToCalculate == "") {
+     indicesToCalculate <- NULL
+   } else {
+-    indicesToCalculate <- strsplit(indicesToCalculate, ",")
++    indicesToCalculate <- trimws(unlist(strsplit(indicesToCalculate, ",")))
+   }
+ 
+ 
+--- a/modules/griddedStep1.R
++++ b/modules/griddedStep1.R
+@@ -30,6 +30,28 @@
+     )
+   }
+ 
++  all_gridded_indices <- list(
++    griddedIndices  = c("fd","id","su","tr","tnlt2","tnltm2","tnltm20","txge30","txge35","tmge5","tmlt5","tmge10","tmlt10"),
++    griddedIndices2 = c("txx","tnn","tnx","txn","dtr","tx95t","tmm","txm","tnm"),
++    griddedIndices3 = c("tx10p","tx90p","tn10p","tn90p","txgt50p"),
++    griddedIndices4 = c("wsdi","wsdid","csdi","csdid","txdtnd","txbdtnbd","gsl","hw"),
++    griddedIndices5 = c("hddheatn","cddcoldn","gddgrown"),
++    griddedIndices6 = c("cdd","cwd","r10mm","r20mm","rx1day","rx5day","rxdday","rnnmm","prcptot","sdii","r95p","r99p","r95ptot","r99ptot"),
++    griddedIndices7 = c("spei","spi")
++  )
++
++  observeEvent(input$griddedSelectAll, {
++    for (grp in names(all_gridded_indices)) {
++      updateCheckboxGroupInput(session, grp, selected = all_gridded_indices[[grp]])
++    }
++  })
++
++  observeEvent(input$griddedDeselectAll, {
++    for (grp in names(all_gridded_indices)) {
++      updateCheckboxGroupInput(session, grp, selected = character(0))
++    }
++  })
++
+   observeEvent(input$calculateGriddedIndices, {
+     validate(
+         need(!is.null(input$dataFiles), message = "Please specify input file(s)."),
+@@ -54,6 +76,13 @@
+     disable("calculateGriddedIndices")
+     removeModal()
+ 
++    selected_gridded_indices <- c(
++      input$griddedIndices, input$griddedIndices2, input$griddedIndices3,
++      input$griddedIndices4, input$griddedIndices5, input$griddedIndices6,
++      input$griddedIndices7
++    )
++    indicesToCalculate <- if (length(selected_gridded_indices) == 0) "" else paste(selected_gridded_indices, collapse = ",")
++
+     params <- ncdfInputParams(input$prName,
+                 input$txName,
+                 input$tnName,
+@@ -62,7 +91,7 @@
+                 input$instituteName,
+                 input$baseStart,
+                 input$baseEnd,
+-                input$indicesToCalculate,
++                indicesToCalculate,
+                 input$ehfDefinition,
+                 input$nCores,
+                 input$maxVals)
+--- a/modules/griddedStep1UI.R
++++ b/modules/griddedStep1UI.R
+@@ -37,9 +37,57 @@
+               numericInput(ns("nCores"),
+                 paste0("Number of cores to use (your computer has ", detectCores(), " cores):"),
+                 value = 1, min = 1, max = detectCores()),
+-              textInput(ns("indicesToCalculate"),
+-                paste0("Indices to calculate. Leave empty to calculate all indices,",
+-                "otherwise provide a comma-separated list of index names in lower case (e.g. txxm, tn90p)):")),
++              h5(strong("Indices à calculer")),
++              p("Sélectionnez les indices souhaités. Si aucun n'est coché, tous les indices seront calculés."),
++              div(style = "margin-bottom: 10px;",
++                actionButton(ns("griddedSelectAll"),   "Tout sélectionner",   class = "btn btn-xs btn-default"),
++                actionButton(ns("griddedDeselectAll"), "Tout désélectionner", class = "btn btn-xs btn-default", style = "margin-left: 8px;")
++              ),
++              fluidRow(
++                column(3,
++                  h6(strong("Température — seuils simples")),
++                  checkboxGroupInput(ns("griddedIndices"), label = NULL,
++                    choices = c("fd","id","su","tr","tnlt2","tnltm2","tnltm20","txge30","txge35","tmge5","tmlt5","tmge10","tmlt10"),
++                    selected = c()
++                  ),
++                  h6(strong("Température — statistiques")),
++                  checkboxGroupInput(ns("griddedIndices2"), label = NULL,
++                    choices = c("txx","tnn","tnx","txn","dtr","tx95t","tmm","txm","tnm"),
++                    selected = c()
++                  )
++                ),
++                column(3,
++                  h6(strong("Température — percentiles")),
++                  checkboxGroupInput(ns("griddedIndices3"), label = NULL,
++                    choices = c("tx10p","tx90p","tn10p","tn90p","txgt50p"),
++                    selected = c("tx90p","tn10p")
++                  ),
++                  h6(strong("Température — durées/vagues")),
++                  checkboxGroupInput(ns("griddedIndices4"), label = NULL,
++                    choices = c("wsdi","wsdid","csdi","csdid","txdtnd","txbdtnbd","gsl","hw"),
++                    selected = c()
++                  ),
++                  h6(strong("Degrés-jours")),
++                  checkboxGroupInput(ns("griddedIndices5"), label = NULL,
++                    choices = c("hddheatn","cddcoldn","gddgrown"),
++                    selected = c()
++                  )
++                ),
++                column(3,
++                  h6(strong("Précipitations")),
++                  checkboxGroupInput(ns("griddedIndices6"), label = NULL,
++                    choices = c("cdd","cwd","r10mm","r20mm","rx1day","rx5day","rxdday","rnnmm","prcptot","sdii","r95p","r99p","r95ptot","r99ptot"),
++                    selected = c()
++                  )
++                ),
++                column(3,
++                  h6(strong("Sécheresse")),
++                  checkboxGroupInput(ns("griddedIndices7"), label = NULL,
++                    choices = c("spei","spi"),
++                    selected = c("spei")
++                  )
++                )
++              ),
+               fileInput(ns("thresholdFiles"),
+                 NULL,
+                 accept      = c("NetCDF", "application/netcdf,application/x-netcdf", ".nc"),
+--- a/modules/singleStationStep3.R
++++ b/modules/singleStationStep3.R
+@@ -45,6 +45,29 @@
+     return(errorHTML)
+   })
+ 
++  # All available index short names grouped by checkbox input ID
++  all_indices_by_group <- list(
++    selectedIndices  = c("fd","id","su","tr","tnlt2","tnltm2","tnltm20","txge30","txge35","tmge5","tmlt5","tmge10","tmlt10"),
++    selectedIndices2 = c("txx","tnn","tnx","txn","dtr","tx95t","tmm","txm","tnm"),
++    selectedIndices3 = c("tx10p","tx90p","tn10p","tn90p","txgt50p"),
++    selectedIndices4 = c("wsdi","wsdid","csdi","csdid","txdtnd","txbdtnbd","gsl","hw"),
++    selectedIndices5 = c("hddheatn","cddcoldn","gddgrown"),
++    selectedIndices6 = c("cdd","cwd","r10mm","r20mm","rx1day","rx5day","rxdday","rnnmm","prcptot","sdii","r95p","r99p","r95ptot","r99ptot"),
++    selectedIndices7 = c("spei","spi")
++  )
++
++  observeEvent(input$selectAllIndices, {
++    for (grp in names(all_indices_by_group)) {
++      updateCheckboxGroupInput(session, grp, selected = all_indices_by_group[[grp]])
++    }
++  })
++
++  observeEvent(input$deselectAllIndices, {
++    for (grp in names(all_indices_by_group)) {
++      updateCheckboxGroupInput(session, grp, selected = character(0))
++    }
++  })
++
+   output$loadParamHelpText <- renderUI({
+       indexParamLink <- paste0("<a target=\"_blank\" href=https://github.com/ARCCSS-extremes/climpact/blob/master/www/user_guide/Climpact_user_guide.md#calculatesingle> Section 4.4</a>")
+       HTML(paste0("<p>The following fields change user-definable parameters in several Climpact indices.",
+@@ -58,8 +81,20 @@
+     # ------------------------------------------------------------------ #
+     # Validate inputs
+     # ------------------------------------------------------------------ #
++    # Gather all selected indices across all checkbox groups
++    selected_indices <- c(
++      input$selectedIndices,
++      input$selectedIndices2,
++      input$selectedIndices3,
++      input$selectedIndices4,
++      input$selectedIndices5,
++      input$selectedIndices6,
++      input$selectedIndices7
++    )
++
+     validate(
+         need(input$plotTitle != "", message = "Please enter a plot title"),
++        need(length(selected_indices) > 0, message = "Please select at least one index to calculate."),
+         need(input$wsdin <= 10, message = "WSDId: value must be between 1 and 10"),
+         need(input$wsdin > 0, message = "WSDId: value must be between 1 and 10"),
+         need(input$csdin <= 10, message = "CSDId: value must be between 1 and 10"),
+@@ -98,7 +133,8 @@
+    
+        index.calc(progress, 2, singleStationState$metadata(),
+          singleStationState$climdexInput(), singleStationState$outputFolders(),
+-         singleStationState$climdexInputParams())
++         singleStationState$climdexInputParams(),
++         selected_indices = selected_indices)
+    
+        # Create a zip file containing all of the results.
+        folderToZip(singleStationState$outputFolders()$outputdir)
+--- a/modules/singleStationStep3UI.R
++++ b/modules/singleStationStep3UI.R
+@@ -28,7 +28,127 @@
+       condition = "output.qcStatus == 'Done' && output.qualityControlError == ''",
+       ns = ns,
+       h4("3. Calculate and plot indices"),
+-      bsCollapse(id = ns("collapseStep3"), open = "Settings", multiple = TRUE,
++      bsCollapse(id = ns("collapseStep3"), open = c("Settings", "Sélection des indices"), multiple = TRUE,
++      bsCollapsePanel("Sélection des indices",
++        fluidRow(
++          column(12,
++            div(style = "margin-bottom: 10px;",
++              actionButton(ns("selectAllIndices"),   "Tout sélectionner",   class = "btn btn-xs btn-default"),
++              actionButton(ns("deselectAllIndices"), "Tout désélectionner", class = "btn btn-xs btn-default", style = "margin-left: 8px;")
++            )
++          )
++        ),
++        fluidRow(
++          # Colonne 1 : Température - seuils simples
++          column(3,
++            h5(strong("Température — seuils simples")),
++            checkboxGroupInput(ns("selectedIndices"), label = NULL,
++              choices = c(
++                "fd — Frost Days (TN < 0°C)"       = "fd",
++                "id — Ice Days (TX < 0°C)"          = "id",
++                "su — Summer Days (TX > 25°C)"      = "su",
++                "tr — Tropical Nights (TN > 20°C)"  = "tr",
++                "tnlt2 — TN < 2°C"                 = "tnlt2",
++                "tnltm2 — TN < -2°C"               = "tnltm2",
++                "tnltm20 — TN < -20°C"             = "tnltm20",
++                "txge30 — TX ≥ 30°C"               = "txge30",
++                "txge35 — TX ≥ 35°C"               = "txge35",
++                "tmge5 — TM ≥ 5°C"                 = "tmge5",
++                "tmlt5 — TM < 5°C"                 = "tmlt5",
++                "tmge10 — TM ≥ 10°C"               = "tmge10",
++                "tmlt10 — TM < 10°C"               = "tmlt10"
++              ),
++              selected = c()
++            ),
++            h5(strong("Température — statistiques")),
++            checkboxGroupInput(ns("selectedIndices2"), label = NULL,
++              choices = c(
++                "txx — Max TX"                      = "txx",
++                "tnn — Min TN"                      = "tnn",
++                "tnx — Max TN"                      = "tnx",
++                "txn — Min TX"                      = "txn",
++                "dtr — Daily Temp. Range"           = "dtr",
++                "tx95t — 95e pct. TX"              = "tx95t",
++                "tmm — Moyenne TM"                 = "tmm",
++                "txm — Moyenne TX"                 = "txm",
++                "tnm — Moyenne TN"                 = "tnm"
++              ),
++              selected = c()
++            )
++          ),
++          # Colonne 2 : Température - percentiles + durées
++          column(3,
++            h5(strong("Température — percentiles")),
++            checkboxGroupInput(ns("selectedIndices3"), label = NULL,
++              choices = c(
++                "tx10p — Cool Days (TX < 10e pct)"  = "tx10p",
++                "tx90p — Hot Days (TX > 90e pct)"   = "tx90p",
++                "tn10p — Cold Nights (TN < 10e pct)"= "tn10p",
++                "tn90p — Warm Nights (TN > 90e pct)"= "tn90p",
++                "txgt50p — TX > 50e pct"            = "txgt50p"
++              ),
++              selected = c("tx90p", "tn10p")
++            ),
++            h5(strong("Température — durées/vagues")),
++            checkboxGroupInput(ns("selectedIndices4"), label = NULL,
++              choices = c(
++                "wsdi — Warm Spell Duration"        = "wsdi",
++                "wsdid — WSDI user-defined"         = "wsdid",
++                "csdi — Cold Spell Duration"        = "csdi",
++                "csdid — CSDI user-defined"         = "csdid",
++                "txdtnd — Consec. Hot Days & Nights"= "txdtnd",
++                "txbdtnbd — Consec. Cold Days & Nights" = "txbdtnbd",
++                "gsl — Growing Season Length"       = "gsl",
++                "hw — Heatwave Aspects"             = "hw"
++              ),
++              selected = c()
++            ),
++            h5(strong("Degrés-jours")),
++            checkboxGroupInput(ns("selectedIndices5"), label = NULL,
++              choices = c(
++                "hddheatn — Heating Degree Days"    = "hddheatn",
++                "cddcoldn — Cooling Degree Days"    = "cddcoldn",
++                "gddgrown — Growing Degree Days"    = "gddgrown"
++              ),
++              selected = c()
++            )
++          ),
++          # Colonne 3 : Précipitations
++          column(3,
++            h5(strong("Précipitations")),
++            checkboxGroupInput(ns("selectedIndices6"), label = NULL,
++              choices = c(
++                "cdd — Consecutive Dry Days"        = "cdd",
++                "cwd — Consecutive Wet Days"        = "cwd",
++                "r10mm — Heavy Rain (≥ 10 mm)"     = "r10mm",
++                "r20mm — Very Heavy Rain (≥ 20 mm)" = "r20mm",
++                "rx1day — Max 1-day PR"             = "rx1day",
++                "rx5day — Max 5-day PR"             = "rx5day",
++                "rxdday — Max d-day PR (user)"      = "rxdday",
++                "rnnmm — Custom Rain Days (≥ nn)"   = "rnnmm",
++                "prcptot — Annual Total PR"         = "prcptot",
++                "sdii — Daily PR Intensity"         = "sdii",
++                "r95p — Heavy Rain Total (> 95e pct)" = "r95p",
++                "r99p — Extreme Rain Total (> 99e pct)" = "r99p",
++                "r95ptot — Very Wet Days Contribution" = "r95ptot",
++                "r99ptot — Extremely Wet Days Contribution" = "r99ptot"
++              ),
++              selected = c()
++            )
++          ),
++          # Colonne 4 : Sécheresse
++          column(3,
++            h5(strong("Sécheresse")),
++            checkboxGroupInput(ns("selectedIndices7"), label = NULL,
++              choices = c(
++                "spei — SPEI (Standardised Precip. Evapotranspiration Index)" = "spei",
++                "spi  — SPI (Standardised Precipitation Index)"               = "spi"
++              ),
++              selected = c("spei")
++            )
++          )
++        )
++      ),
+       bsCollapsePanel("Settings",
+         fluidRow(
+           column(12,
+--- a/server/climpact.etsci-functions.r
++++ b/server/climpact.etsci-functions.r
+@@ -504,7 +504,12 @@
+ 
+     # calculate SPEI
+     x <- array(NA, c(3, length(unique(factor(format(spidates, format = "%Y-%m"))))))
+-    for (i in 1:length(x[, 1])) {
++    # PATCH 2026-05-20 : calcul de SPEI-6 UNIQUEMENT (echelle i=2, scale=6 mois).
++    # Le pipeline ECE n'utilise que SPEI-6 (cf agreger() spei_scale=2). Calculer
++    # 1 echelle au lieu de 3 divise le temps SPEI par ~3. Le tableau x reste
++    # [3, n_mois] : lignes 1 (SPEI-3) et 3 (SPEI-12) restent NA -> structure
++    # preservee pour write.climdex.results (qui attend [3,t]).
++    for (i in 2) {
+         spei_col <- spei(ts(prec_sum - pet, freq = 12, start = ts.start, end = ts.end),
+             scale = scale[i], ref.start = ref.start, ref.end = ref.end,
+             distribution = distribution, fit = fit, kernal = kernal, na.rm = TRUE, verbose = FALSE
+--- a/server/pcic_packages/climdex.pcic.ncdf/R/ncdf.R
++++ b/server/pcic_packages/climdex.pcic.ncdf/R/ncdf.R
+@@ -562,7 +562,31 @@
+ ## FIXME: This will need to be revised for fixed time dimensions. Should be identified by axis.
+ get.ts <- function(f) {
+   ts.list <- lapply(lapply(f, ncdf4.helpers::nc.get.time.series), trunc, "days")
+-  stopifnot(all.the.same(ts.list))
++  # Comparer les dates en chaine de caracteres (evite les faux-negatifs dus
++  # a des encodages PCICt differents entre fichiers, ex. reference "1970-01-01"
++  # vs "1979-01-01" produisant des objets non-identiques mais representant
++  # les memes jours calendaires).
++  dates.char <- lapply(ts.list, as.character)
++  if (!all.the.same(dates.char)) {
++    lens     <- sapply(dates.char, length)
++    min_len  <- min(lens)
++    # Verifier si les series sont identiques sur leur prefixe commun
++    # (ex. tmin a 2 jours de plus que tmax en fin de serie)
++    d_trim <- lapply(dates.char, function(d) d[seq_len(min_len)])
++    if (all.the.same(d_trim)) {
++      warning(sprintf(
++        paste0("Axes temporels tronques au plus court (%d pas; etaient: %s).\n",
++               "  Les %d derniers pas des fichiers plus longs seront ignores."),
++        min_len, paste(lens, collapse = "/"), max(lens) - min_len))
++      ts.list <- lapply(ts.list, function(ts) ts[seq_len(min_len)])
++    } else {
++      stop(sprintf(
++        paste0("Les series temporelles des fichiers d'entree ne sont pas identiques.\n",
++               "  Nombre de pas de temps : %s\n",
++               "  Verifiez nlyr() de chaque fichier de fusion et relancez."),
++        paste(lens, collapse = " / ")))
++    }
++  }
+   ts.list[[1]]
+ }
+ 
+@@ -670,13 +694,21 @@
+ #' @export
+ get.data <- function(f, v, subset, src.units, dest.units, dim.axes) {
+   stopifnot(inherits(f, "ncdf4"))
+-  dat <- if(!missing(src.units) && !missing(dest.units))
+-    udunits2::ud.convert(ncdf4.helpers::nc.get.var.subset.by.axes(f, v, subset), src.units, dest.units)
+-  else
+-    ncdf4.helpers::nc.get.var.subset.by.axes(f, v, subset)
+-    
++  raw.dat <- ncdf4.helpers::nc.get.var.subset.by.axes(f, v, subset)
++  dat <- if(!missing(src.units) && !missing(dest.units)) {
++    # ud.convert utilise .C() qui supprime les attributs dim -> on les restaure
++    d <- udunits2::ud.convert(raw.dat, src.units, dest.units)
++    if (!is.null(dim(raw.dat)) && is.null(dim(d))) {
++      dim(d) <- dim(raw.dat)
++    }
++    d
++  } else {
++    raw.dat
++  }
+   reduce.dims <- which(dim.axes %in% c("X", "Y", "Z"))
+-  return(t(flatten.dims(dat, reduce.dims=reduce.dims)))
++  # Utiliser base::t explicitement pour eviter toute ambiguite de dispatch S4
++  # (certains packages charges dans les workers peuvent redefinir 't' comme generique S4)
++  return(base::t(flatten.dims(dat, reduce.dims=reduce.dims)))
+ }
+ 
+ ## Produce slab of northern.hemisphere booleans of the same shape as the data.
+@@ -1283,6 +1315,7 @@
+     cluster <- snow::makeCluster(parallel, type)
+ 
+     snow::clusterEvalQ(cluster, library(climdex.pcic.ncdf))
++    snow::clusterEvalQ(cluster, library(ncdf4.helpers))
+   }
+   cluster
+ }
+@@ -1475,12 +1508,33 @@
+ 
+   ## Get projection
+   projection <- ncdf4.helpers::nc.get.proj4.string(f[[1]], v.list[[1]][1])
+-  stopifnot(!is.null(projection))
++  # NULL = aucun attribut grid_mapping trouvé (ex. fichiers terra/WKT sans CF grid_mapping)
++  # On traite comme grille géographique lat/lon (équivalent à projection == "")
++  if(is.null(projection)) projection <- ""
+   if(projection == "")
+     projection <- NULL
+   
++  src.units <- sapply(names(v.f.idx), function(i) { f[[v.f.idx[i]]]$var[[variable.name.map[i]]]$units })
++  # "mm" et variantes sont physiquement équivalents à "kg m-2 d-1" pour des précipitations journalières
++  # udunits2 ne connaît pas cette équivalence → normalisation manuelle
++  if("prec" %in% names(src.units) &&
++     trimws(src.units["prec"]) %in% c("mm","mm/day","mm day-1","mm d-1","mm/d")) {
++    src.units["prec"] <- "kg m-2 d-1"
++  }
++  # Les fichiers ecrits par terra (writeCDF) peuvent avoir des unites manquantes ("", " ") ou
++  # des variantes non reconnues par udunits2 ("degC", "deg_C", "celsius"...).
++  # Les donnees ECE sont deja en degres Celsius (conversion K->C faite en amont) :
++  # on force degrees_C pour toutes les variables de temperature sans verifier via udunits2.
++  for (.tv in intersect(c("tmax","tmin","tavg"), names(src.units))) {
++    .u <- trimws(src.units[.tv])
++    if (.u != "degrees_C") {
++      message(sprintf("  [units norm] %s : '%s' -> force degrees_C", .tv, .u))
++      src.units[.tv] <- "degrees_C"
++    }
++  }
++
+   return(list(ts=get.ts(f), dim.size=get.dim.size(f, v.f.idx, variable.name.map), dim.axes=get.dim.axes(f, v.f.idx, variable.name.map),
+-              src.units=sapply(names(v.f.idx), function(i) { f[[v.f.idx[i]]]$var[[variable.name.map[i]]]$units }),
++              src.units=src.units,
+               dest.units=dest.units, v.f.idx=v.f.idx, projection=projection))
+ }
+ 
+@@ -1843,6 +1897,9 @@
+   exact_date_indices[[paste0("rx",rxnday_n,"day")]] <<- "val"
+ 
+   cdx.ncfile <- create.ncdf.output.files(cdx.meta, f, f.meta$v.f.idx, variable.name.map, f.meta$ts, get.time.origin(f, f.meta$dim.axes), base.range, out.dir, author.data,ehfdef)
++
++  # Garantir la fermeture des fichiers de sortie meme en cas d'erreur (evite HDF5 lock sur Windows)
++  on.exit(lapply(cdx.ncfile, function(x) try(ncdf4::nc_close(x), silent=TRUE)), add=TRUE)
+ 
+   ## Compute indices, either single process or multi-process using 'parallel'
+   subsets <- ncdf4.helpers::get.cluster.worker.subsets(max.vals.millions * 1000000, f.meta$dim.size, f.meta$dim.axes, axis.to.split.on)
+@@ -1851,21 +1908,56 @@
+     lapply(f, ncdf4::nc_close)
+     rm(f)
+     cluster <- set.up.cluster(parallel, cluster.type)
++    on.exit(try(snow::stopCluster(cluster), silent=TRUE), add=TRUE)
+ 
+     # load the climdex.pcic library on each node
+-    clusterCall(cluster, function() library(climdex.pcic))
+-    clusterCall(cluster, function() source(paste0(root.dir,"/server/climpact.etsci-functions.r")))
++    # Exporter root.dir explicitement avant le source() pour eviter la
++    # serialisation de la closure avec des objets ncdf4 non-serializables
++    snow::clusterExport(cluster, "root.dir", envir = environment())
++    snow::clusterEvalQ(cluster, {
++      library(climdex.pcic)
++      library(ncdf4.helpers)
++      library(udunits2)
++      # Charger climdex.pcic.ncdf explicitement pour :
++      #   1. garantir que le namespace est initialise avec toutes ses dependances
++      #   2. eviter que la deserialisation de compute.indices.for.stripe charge
++      #      le namespace a la volee (ce qui peut laisser des methodes S4 non
++      #      enregistrees et provoquer 'attempt to select less than one element
++      #      in get1index' lors du dispatch de base::t)
++      #   3. s'assurer que la version INSTALLEE (avec le correctif dims) est chargee
++      library(climdex.pcic.ncdf)
++      source(file.path(root.dir, "server", "climpact.etsci-functions.r"))
++      source(file.path(root.dir, "server", "global_variables.r"))
++    })
+ 
+     snow::clusterExport(cluster, list("input.files", "thresholds.files","index.data","spei.opts"), environment())
+-    snow::clusterEvalQ(cluster, f <<- lapply(input.files, ncdf4::nc_open, readunlim=FALSE))
++    # Ne pas utiliser readunlim=FALSE : avec ce flag, les valeurs de la dimension
++    # illimitee (temps) ne sont pas pre-chargees, ce qui peut perturber les fonctions
++    # ncdf4.helpers qui accedent a f$dim$time$vals pour la detection des axes.
++    snow::clusterEvalQ(cluster, f <<- lapply(input.files, ncdf4::nc_open))
+     snow::clusterEvalQ(cluster, thresholds.netcdf <<- thresholds.open(thresholds.files))
+ 
+     ## Meat...
++    ## PATCH 2026-05-20 : compteur de progression pour la branche PARALLELE
++    ## (la branche sequentielle l'avait deja, pas celle-ci). Le local.filter.func
++    ## est appele cote master a chaque tranche terminee -> compteur + ETA.
++    .clim_n_sub <- length(subsets)
++    .clim_done  <- 0L
++    .clim_t0    <- proc.time()[["elapsed"]]
++    cat(sprintf("[CLIMPACT] Demarrage calcul parallele : %d tranches a traiter\n",
++                .clim_n_sub)); flush.console()
+     parLapplyLBFiltered(cluster, subsets, compute.indices.for.stripe, cdx.funcs, f.meta$ts, base.range, f.meta$dim.axes, f.meta$v.f.idx, variable.name.map, f.meta$src.units, f.meta$dest.units, t.f.idx, thresholds.name.map, fclimdex.compatible, f.meta$projection, project.lat2d.coords=project.lat2d.coords, local.filter.func=function(x, x.sub) {
+ #      names(x[[1]])[names(x[[1]])=="rxdday_MON"] = paste0("rx",rxnday_n,"day_MON")
+ #      names(x[[1]])[names(x[[1]])=="rxdday_ANN"] = paste0("rx",rxnday_n,"day_ANN")
+ 
+       write.climdex.results(x, x.sub, cdx.ncfile, f.meta$dim.size, cdx.meta$var.name, f.meta=f.meta)
++      ## PATCH 2026-05-20 : incremente le compteur et affiche progression + ETA
++      .clim_done <<- .clim_done + 1L
++      .clim_el  <- proc.time()[["elapsed"]] - .clim_t0
++      .clim_eta <- if (.clim_done > 0L) .clim_el / .clim_done * (.clim_n_sub - .clim_done) else 0
++      cat(sprintf("[CLIMPACT] tranche %d/%d terminee (%.0f%%) | ecoule %.0f min | ETA ~%.0f min\n",
++                  .clim_done, .clim_n_sub, 100 * .clim_done / .clim_n_sub,
++                  .clim_el / 60, .clim_eta / 60)); flush.console()
+     })
+ 
+     ## Clean-up.
+@@ -1876,7 +1968,28 @@
+     ##try(getFromNamespace('nc_set_chunk_cache', 'ncdf4')(1024 * 2048, 1009), silent=TRUE)
+     
+     ## Meat...
+-    lapply(subsets, function(x) { write.climdex.results(compute.indices.for.stripe(x, cdx.funcs, f.meta$ts, base.range, f.meta$dim.axes, f.meta$v.f.idx, variable.name.map, f.meta$src.units, f.meta$dest.units, t.f.idx, thresholds.name.map, fclimdex.compatible, f.meta$projection, f, thresholds.netcdf, project.lat2d.coords=project.lat2d.coords), x, cdx.ncfile, f.meta$dim.size, cdx.meta$var.name,f.meta=f.meta) })
++    .n_sub <- length(subsets)
++    .t_sub <- proc.time()[["elapsed"]]
++    lapply(rev(seq_along(subsets)), function(.i) {
++      .elapsed <- proc.time()[["elapsed"]] - .t_sub
++      .eta_str <- if (.i > 1) {
++        .eta_s <- .elapsed / (.i - 1) * (.n_sub - .i + 1)
++        if (.eta_s < 60) sprintf("ETA ~%.0fs", .eta_s)
++        else             sprintf("ETA ~%.0f min", .eta_s / 60)
++      } else "ETA ..."
++      cat(sprintf("\r    Climpact : tranche %d/%d  [%s]   ", .i, .n_sub, .eta_str))
++      flush.console()
++      result <- write.climdex.results(
++        compute.indices.for.stripe(subsets[[.i]], cdx.funcs, f.meta$ts, base.range,
++          f.meta$dim.axes, f.meta$v.f.idx, variable.name.map, f.meta$src.units,
++          f.meta$dest.units, t.f.idx, thresholds.name.map, fclimdex.compatible,
++          f.meta$projection, f, thresholds.netcdf, project.lat2d.coords=project.lat2d.coords),
++        subsets[[.i]], cdx.ncfile, f.meta$dim.size, cdx.meta$var.name, f.meta=f.meta)
++      if (.i == .n_sub) cat(sprintf("\r    Climpact : %d tranches traitées en %s\n",
++        .n_sub, {.s <- proc.time()[["elapsed"]] - .t_sub
++                 if(.s < 60) sprintf("%.0fs", .s) else sprintf("%.0f min %.0fs", .s%/%60, .s%%60)}))
++      result
++    })
+ 
+     ## Clean-up.
+     thresholds.close(thresholds.netcdf)
+--- a/services/calculate_indices.R
++++ b/services/calculate_indices.R
+@@ -11,7 +11,7 @@
+ 
+ # This function loops through all indices and calls the appropriate functions to calculate them.
+ # It contains functions for some indices that are not kept in climpact.etsci-functions.r. This is because they are specific to the GUI.
+-index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdexInputParams) {
++index.calc <- function(progress, prog_int, metadata, cio, outputFolders, climdexInputParams, selected_indices = NULL) {
+ 
+   # pdf file for all plots
+   # Check 'all' PDF isn't open, then open.
+@@ -44,6 +44,12 @@
+     # we are not writing date information to output CSV file
+     return_dates = FALSE
+ 
++    # Skip this index if it's not in the user-selected list
++    if (!is.null(selected_indices) && length(selected_indices) > 0 &&
++        !as.character(index.list$Short.name[i]) %in% selected_indices) {
++      next
++    }
++
+     # Skip this index if it's a percentile index and calculate_pctl_indices has been set to FALSE
+     # if (calculate_pctl_indices == FALSE && index.list$Base.period.flag[i] == TRUE) {
+     #   print(paste0("Skipping ",tmp.index.name," since percentile indices are being omitted."))

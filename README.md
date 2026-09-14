@@ -8,11 +8,12 @@ La chaîne descend trois bases climatiques journalières à 1 km (méthode Delta
 en dérive six indices d'extrêmes, les extrait aux placettes de l'Inventaire
 forestier national, puis modélise la mortalité par essence et par base.
 
-> **Version v1.0 : code tel qu'exécuté pour le rapport de stage (juillet 2026).**
-> Seules les racines des chemins ont été rendues configurables ; aucune ligne de
-> calcul n'a été modifiée (vérifiable dans l'historique git). Les défauts connus
-> sont listés dans [`ERRATA.md`](ERRATA.md) et seront corrigés dans une v1.1
-> distincte, sans effet rétroactif sur les résultats du rapport.
+> **Version v1.1.** Corrige les écarts relevés à la relecture du code du rapport
+> ([`ERRATA.md`](ERRATA.md), [`CHANGELOG.md`](CHANGELOG.md)) : SPEI6 annuel en minimum, même
+> échantillon de placettes et mêmes partitions pour toutes les bases, tableaux calculés, figures
+> perdues recréées. **Ce code n'a pas été réexécuté sur les données complètes** ; les résultats
+> du rapport de stage (juillet 2026) ont été produits par la version taguée `v1.0-rapport`,
+> identique au code exécuté à l'époque (seuls les chemins y sont configurables).
 
 ## La chaîne en 7 modules
 
@@ -36,7 +37,9 @@ Détail des entrées, sorties et de l'ordre d'exécution : [`docs/pipeline.md`](
 - [`docs/modele_mortalite.md`](docs/modele_mortalite.md) : jeu d'analyse et modèle
 - [`docs/figures_rapport.md`](docs/figures_rapport.md) : chaque figure du rapport et son script
 - [`docs/sources_donnees.md`](docs/sources_donnees.md) : origine et accès aux données
-- [`ERRATA.md`](ERRATA.md) : écarts connus entre intention et code
+- [`ERRATA.md`](ERRATA.md) : écarts relevés et leur statut en v1.1
+- [`CHANGELOG.md`](CHANGELOG.md) : différences entre v1.0 et v1.1
+- [`tests/`](tests) : tests locaux des corrections
 
 ## Lancer un script
 
