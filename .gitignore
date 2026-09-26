@@ -40,6 +40,7 @@ Thumbs.db
 *.xlsx
 *.docx
 *.pdf
+!docs/rapport_stage_M2_Genty_2026.pdf
 *.png
 third_party/climpact/climpact-master/
 Rplots.pdf

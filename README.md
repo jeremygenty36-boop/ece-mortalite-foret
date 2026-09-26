@@ -31,6 +31,9 @@ Détail des entrées, sorties et de l'ordre d'exécution : [`docs/pipeline.md`](
 
 ## Documentation
 
+- [`docs/rapport_stage_M2_Genty_2026.pdf`](docs/rapport_stage_M2_Genty_2026.pdf) : le rapport de stage
+  (34 pages, juillet 2026), « Évaluation d'indices représentant les extrêmes climatiques pour expliquer
+  la mortalité des arbres », produit avec la version taguée `v1.0-rapport`
 - [`docs/pipeline.md`](docs/pipeline.md) : ordre d'exécution, entrées, sorties, arborescence attendue
 - [`docs/methode_downscaling.md`](docs/methode_downscaling.md) : méthode Delta
 - [`docs/indices_ece.md`](docs/indices_ece.md) : définition des 6 indices, telle que codée
@@ -118,4 +121,6 @@ method calibrated on DIGITALIS; six extreme indices (TXx, TNn, SPEI-6, WG10P, HW
 extracted at French National Forest Inventory plots over 10-year windows, and used in binary cloglog
 GLMs per species and dataset (1,000 random 70/30 splits, forward BIC selection). Version 1.1 fixes the
 issues listed in `ERRATA.md` and has not been re-run on the full data; the internship report results
-come from tag `v1.0-rapport`. Code and documentation are in French.
+come from tag `v1.0-rapport`. The full internship report (34 pages, French) is included:
+[`docs/rapport_stage_M2_Genty_2026.pdf`](docs/rapport_stage_M2_Genty_2026.pdf). Code and documentation
+are in French.
